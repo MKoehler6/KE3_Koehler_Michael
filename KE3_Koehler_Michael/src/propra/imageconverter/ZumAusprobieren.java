@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 public class ZumAusprobieren {
 	
-	int[] bits = {0,0,0,0,0,0,1,1, 0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0, 1,0,0,1,1,0,1,1, 1,1,0,0,1,0,0,0, 
-			0,1,0,1,0,0,0,1, 1,1,0,0,0,1,0,0, 1,1,0,0,1,0,1,0, 1,0,0,0,0,1,1,0, 0,1,1,1,1,1,1,1, 
-			1,1,0,1,1,0,0,0, 0,0,0,0,1,1,0,0, 0,0,0,0,1,1,1,0, 0,0,0,0,1,0,1,1, 1,1,1,1,1,1,1,1};
+//	int[] bits = {0,0,0,0,0,0,1,1, 0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0, 1,0,0,1,1,0,1,1, 1,1,0,0,1,0,0,0, 
+//			0,1,0,1,0,0,0,1, 1,1,0,0,0,1,0,0, 1,1,0,0,1,0,1,0, 1,0,0,0,0,1,1,0, 0,1,1,1,1,1,1,1, 
+//			1,1,0,1,1,0,0,0, 0,0,0,0,1,1,0,0, 0,0,0,0,1,1,1,0, 0,0,0,0,1,0,1,1, 1,1,1,1,1,1,1,1};
+	int[] bits = {0,0,1,1,0,0,0,0, 0,0,0,1,1,0,0,0, 0,0,0,1,0,1,1,0, 0,0,0,0,1,0,1,1, 0,0,0,0,0,1,1,0};
+	int[] bilddaten = {0,1,0,0,1,0,0,0,1,0,1,1};
 	int counter = 0;
+	int counterDecode = 0;
 	ArrayList<Knoten> knotenArray = new ArrayList<>();
 	
 
@@ -19,10 +22,11 @@ public class ZumAusprobieren {
 
 	private void testBaumErstellen() {
 		Knoten wurzel = new Knoten();
-		knotenArray.add(wurzel);
+		knotenArray.add(wurzel);// speichern des Knoten zur späteren Kontrollausgabe
 		baumErstellenRek(wurzel);
 		ausgabe();
 		ausgabeBaumStruktur();
+		decode(knotenArray.get(0));
 	}
 
 
@@ -33,8 +37,8 @@ public class ZumAusprobieren {
 					
 		if (bit == 0) {
 			Knoten neuerKnoten = new Knoten();
-			knoten.left = neuerKnoten;
-			knotenArray.add(neuerKnoten);
+			knoten.left = neuerKnoten; // neuer innerer Knoten wird links angehängt
+			knotenArray.add(neuerKnoten); // speichern des Knoten zur späteren Kontrollausgabe
 			baumErstellenRek(neuerKnoten);
 		} else {
 			int value = 0;
@@ -44,16 +48,16 @@ public class ZumAusprobieren {
 			}
 			counter += 8;
 			Knoten neuerKnoten = new Knoten(value);
-			knoten.left = neuerKnoten;
-			knotenArray.add(neuerKnoten);
+			knoten.left = neuerKnoten; // Blatt mit Wert wird links angehängt
+			knotenArray.add(neuerKnoten); // speichern des Knoten zur späteren Kontrollausgabe
 		}
 		
 //		rechter Zweig
 		bit = bits[counter];
 		if (bit == 0) {
 			Knoten neuerKnoten = new Knoten();
-			knoten.right = neuerKnoten;
-			knotenArray.add(neuerKnoten);
+			knoten.right = neuerKnoten; // neuer innerer Knoten wird rechts angehängt
+			knotenArray.add(neuerKnoten); // speichern des Knoten zur späteren Kontrollausgabe
 			baumErstellenRek(neuerKnoten);
 		} else {
 			int value = 0;
@@ -63,8 +67,8 @@ public class ZumAusprobieren {
 			}
 			counter += 8;
 			Knoten neuerKnoten = new Knoten(value);
-			knoten.right = neuerKnoten;
-			knotenArray.add(neuerKnoten);
+			knoten.right = neuerKnoten; // Blatt mit Wert wird rechts angehängt
+			knotenArray.add(neuerKnoten); // speichern des Knoten zur späteren Kontrollausgabe
 		}
 	}
 
@@ -97,5 +101,31 @@ public class ZumAusprobieren {
 			System.out.println("rechts " + value);
 			ausgabeBaumStrukturRek(k.right);
 		}
+	}
+	
+	private void decode(Knoten wurzel) {
+		Knoten aktuell = wurzel;
+		decodeRek(aktuell);
+	}
+
+	private void decodeRek(Knoten k) {
+		while (counterDecode <= bilddaten.length) {
+			if (k.left == null && k.right == null) {
+				System.out.println(k.getValue());
+				k = knotenArray.get(0);
+				continue;
+			}
+			if (counterDecode == bilddaten.length) break;
+			if (bilddaten[counterDecode] == 0) {
+				k = k.left;
+				counterDecode++;
+				continue;
+			}
+			if (bilddaten[counterDecode] == 1) {
+				k = k.right;
+				counterDecode++;
+			}
+		}
+		
 	}
 }
