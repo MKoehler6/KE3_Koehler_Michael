@@ -82,7 +82,7 @@ public class PropraFormat implements IFormat {
 	}
 	
 	private void checkTypeOfCompression() throws ConverterException {
-		if (typeOfCompression != 0 && typeOfCompression != 1) 
+		if (typeOfCompression != 0 && typeOfCompression != 1 && typeOfCompression != 2) 
 			throw new ConverterException("nicht unterstützter Kompressionstyp");
 	}
 	

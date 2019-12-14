@@ -31,8 +31,7 @@ public class CopyCompressDecompressTgaFile {
 	 * tga-Format in das tga-Format
 	 * dabei wird je nach Bedarf komprimiert und/oder dekomprimiert
 	 */
-	public CopyCompressDecompressTgaFile(String inputPath, String outputPath, boolean rleCompressionOutputFile,
-			boolean huffmanCompressionOutputFile) throws ConverterException {
+	public CopyCompressDecompressTgaFile(String inputPath, String outputPath, boolean rleCompressionOutputFile) throws ConverterException {
 		inputFile = new File(inputPath);
 		outputFile = new File(outputPath);
 		tgaFormat = new TgaFormat(inputPath);

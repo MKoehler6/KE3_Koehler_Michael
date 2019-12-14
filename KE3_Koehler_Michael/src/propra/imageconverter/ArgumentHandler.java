@@ -93,7 +93,7 @@ public class ArgumentHandler {
 			new DecodeBaseN(inputPath, outputPath, typeOfDecoding, alphabet);
 		}
 		else if (inputFormat == "tga" && outputFormat == "tga") {
-			new CopyCompressDecompressTgaFile(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
+			new CopyCompressDecompressTgaFile(inputPath, outputPath, rleCompressionOutputFile);
 		}
 		else if (inputFormat == "propra" && outputFormat == "propra") {
 			new CopyCompressDecompressPropraFile(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
@@ -102,7 +102,7 @@ public class ArgumentHandler {
 			new ConverterTgaToPropra(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
 		}
 		else if (inputFormat == "propra" && outputFormat == "tga") {
-			new ConverterPropraToTga(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
+			new ConverterPropraToTga(inputPath, outputPath, rleCompressionOutputFile);
 		}
 		else {
 			throw new ConverterException("Argumente ungültig");

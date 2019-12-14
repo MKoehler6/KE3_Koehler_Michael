@@ -20,7 +20,6 @@ public class ConverterPropraToTga {
 	private File inputFile;
 	private File outputFile;
 	private boolean rleCompressionOutputFile;
-	private boolean huffmanCompressionOutputFile;
 	private PropraFormat propraFormat;
 	
     private int imageWidth;
@@ -28,8 +27,9 @@ public class ConverterPropraToTga {
     private long dataSegmentSize;
     private byte typeOfCompression;
     private long sizeOfDataSegmentOutputFile = 0;
-	private boolean uncompressInputFile = false;
-	private boolean compressOutputFile = false;
+	private boolean uncompressRleInputFile = false;
+	private boolean compressRleOutputFile = false;
+	private boolean uncompressHuffmanInputFile = false;
 
 	/**
 	 * @author Michael Koehler
@@ -37,12 +37,10 @@ public class ConverterPropraToTga {
 	 * Propra-Format in das tga-Format
 	 * dabei wird je nach Bedarf komprimiert und/oder dekomprimiert
 	 */
-	public ConverterPropraToTga(String inputPath, String outputPath, boolean rleCompressionOutputFile,
-			boolean huffmanCompressionOutputFile) throws ConverterException {
+	public ConverterPropraToTga(String inputPath, String outputPath, boolean rleCompressionOutputFile) throws ConverterException {
 		inputFile = new File(inputPath);
 		outputFile = new File(outputPath);
 		this.rleCompressionOutputFile = rleCompressionOutputFile;
-		this.huffmanCompressionOutputFile = huffmanCompressionOutputFile;
 		
 		propraFormat = new PropraFormat(inputPath); // Ueberpruefen der Input-Datei
 		
@@ -51,11 +49,15 @@ public class ConverterPropraToTga {
 		dataSegmentSize = propraFormat.getDataSegmentSize();
 		typeOfCompression = propraFormat.getTypeOfCompression();
 
-		if (typeOfCompression == 1 && !rleCompressionOutputFile) uncompressInputFile = true;
-		if (typeOfCompression == 0 && rleCompressionOutputFile) compressOutputFile = true;
+		if (typeOfCompression == 1 && !rleCompressionOutputFile) uncompressRleInputFile = true;
+		if (typeOfCompression == 0 && rleCompressionOutputFile) compressRleOutputFile = true;
 		if (typeOfCompression == 1 && rleCompressionOutputFile) {
-			uncompressInputFile = true;
-			compressOutputFile = true;
+			uncompressRleInputFile = true;
+			compressRleOutputFile = true;
+		}
+		if (typeOfCompression == 2 && rleCompressionOutputFile) {
+			uncompressHuffmanInputFile = true;
+			compressRleOutputFile = true;
 		}
 		convertToTga();
 	}
@@ -102,7 +104,7 @@ public class ConverterPropraToTga {
 			
 			for (int line = 0; line < imageHeight; line++) {
 //				Einlesen einer Bildlinie
-				if (uncompressInputFile) {
+				if (uncompressRleInputFile) {
 					inputLine = Utility.uncompressInputLine(bufferedInputStream, imageWidth);
 				} else {
 					for (int pixel = 0; pixel < imageWidth; pixel++) {
@@ -113,7 +115,7 @@ public class ConverterPropraToTga {
 					}
 				}
 				
-				if (compressOutputFile) {
+				if (compressRleOutputFile) {
 //					Farbreihenfolge im Pixel ändern, GBR --> BGR
 					for (int pixel = 0; pixel < imageWidth; pixel++) {
 						byte temp;
@@ -129,7 +131,7 @@ public class ConverterPropraToTga {
 						bufferedOutputStream.write(outputByteCompressed);
 					}
 				} 
-				if (!compressOutputFile){
+				if (!compressRleOutputFile){
 //					konvertieren und in OutputFile schreiben
 					for (int pixel = 0; pixel < imageWidth; pixel++) {
 						for (int i = 0; i < 3; i++) {
