@@ -12,6 +12,7 @@ public class ArgumentHandler {
 	private int typeOfDecoding;
 	private String alphabet;
 	private boolean rleCompressionOutputFile = false;
+	private boolean huffmanCompressionOutputFile = false;
 	private boolean baseN = false;
 
 	/**
@@ -39,6 +40,9 @@ public class ArgumentHandler {
 				}
 				if (splitted[0].startsWith("--compression") && splitted[1].toLowerCase().contains("rle")) {
 					rleCompressionOutputFile = true;
+				}
+				if (splitted[0].startsWith("--compression") && splitted[1].toLowerCase().contains("huffman")) {
+					huffmanCompressionOutputFile = true;
 				}
 				if (splitted[0].startsWith("--encode-base-32")) {
 					encode = true;
@@ -89,16 +93,16 @@ public class ArgumentHandler {
 			new DecodeBaseN(inputPath, outputPath, typeOfDecoding, alphabet);
 		}
 		else if (inputFormat == "tga" && outputFormat == "tga") {
-			new CopyCompressDecompressTgaFile(inputPath, outputPath, rleCompressionOutputFile);
+			new CopyCompressDecompressTgaFile(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
 		}
 		else if (inputFormat == "propra" && outputFormat == "propra") {
-			new CopyCompressDecompressPropraFile(inputPath, outputPath, rleCompressionOutputFile);
+			new CopyCompressDecompressPropraFile(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
 		}
 		else if (inputFormat == "tga" && outputFormat == "propra") {
-			new ConverterTgaToPropra(inputPath, outputPath, rleCompressionOutputFile);
+			new ConverterTgaToPropra(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
 		}
 		else if (inputFormat == "propra" && outputFormat == "tga") {
-			new ConverterPropraToTga(inputPath, outputPath, rleCompressionOutputFile);
+			new ConverterPropraToTga(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
 		}
 		else {
 			throw new ConverterException("Argumente ungültig");

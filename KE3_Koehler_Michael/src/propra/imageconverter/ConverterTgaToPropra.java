@@ -21,6 +21,7 @@ public class ConverterTgaToPropra {
 	private File inputFile;
 	private File outputFile;
 	private boolean rleCompressionOutputFile;
+	private boolean huffmanCompressionOutputFile;
 	private TgaFormat tgaFormat;
 	
 	private int imageWidth;
@@ -32,10 +33,12 @@ public class ConverterTgaToPropra {
 	private boolean uncompressInputFile = false;
 	private boolean compressOutputFile = false;
 
-	public ConverterTgaToPropra(String inputPath, String outputPath, boolean rleCompressionOutputFile) throws ConverterException {
+	public ConverterTgaToPropra(String inputPath, String outputPath, boolean rleCompressionOutputFile,
+			boolean huffmanCompressionOutputFile) throws ConverterException {
 		inputFile = new File(inputPath);
 		outputFile = new File(outputPath);
 		this.rleCompressionOutputFile = rleCompressionOutputFile;
+		this.huffmanCompressionOutputFile = huffmanCompressionOutputFile;
 		
 		tgaFormat = new TgaFormat(inputPath); // Ueberpruefen der Input-Datei
 		

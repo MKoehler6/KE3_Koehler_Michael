@@ -19,7 +19,6 @@ import java.nio.channels.FileChannel;
 
 public class CopyCompressDecompressPropraFile {
 	
-	private boolean rleCompressionOutputFile;
 	private PropraFormat propraFormat;
 	private File inputFile;
 	private File outputFile;
@@ -30,10 +29,10 @@ public class CopyCompressDecompressPropraFile {
 	private long calculatedCheckSum;
 	
 	
-	public CopyCompressDecompressPropraFile(String inputPath, String outputPath, boolean rleCompressionOutputFile) throws ConverterException {
+	public CopyCompressDecompressPropraFile(String inputPath, String outputPath, boolean rleCompressionOutputFile,
+			boolean huffmanCompressionOutputFile) throws ConverterException {
 		inputFile = new File(inputPath);
 		outputFile = new File(outputPath);
-		this.rleCompressionOutputFile = rleCompressionOutputFile;
 		propraFormat = new PropraFormat(inputPath);
 		imageWidth = propraFormat.getImageWidth();
 		imageHeight = propraFormat.getImageHeight();
