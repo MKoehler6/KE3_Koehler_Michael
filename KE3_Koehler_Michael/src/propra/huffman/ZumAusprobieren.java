@@ -1,19 +1,26 @@
-package propra.imageconverter;
+package propra.huffman;
 
 import java.util.ArrayList;
 
-public class HuffmanUtility {
+public class ZumAusprobieren {
 	
 //	int[] bits = {0,0,0,0,0,0,1,1, 0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0, 1,0,0,1,1,0,1,1, 1,1,0,0,1,0,0,0, 
 //			0,1,0,1,0,0,0,1, 1,1,0,0,0,1,0,0, 1,1,0,0,1,0,1,0, 1,0,0,0,0,1,1,0, 0,1,1,1,1,1,1,1, 
 //			1,1,0,1,1,0,0,0, 0,0,0,0,1,1,0,0, 0,0,0,0,1,1,1,0, 0,0,0,0,1,0,1,1, 1,1,1,1,1,1,1,1};
-	static int[] bits = {0,0,1,1,0,0,0,0, 0,0,0,1,1,0,0,0, 0,0,0,1,0,1,1,0, 0,0,0,0,1,0,1,1, 0,0,0,0,0,1,1,0};
-	static int[] bilddaten = {0,1,0,0,1,0,0,0,1,0,1,1};
-	static int counter = 0;
-	static int counterDecode = 0;
-	static ArrayList<Knoten> knotenArray = new ArrayList<>();
+	int[] bits = {0,0,1,1,0,0,0,0, 0,0,0,1,1,0,0,0, 0,0,0,1,0,1,1,0, 0,0,0,0,1,0,1,1, 0,0,0,0,0,1,1,0};
+	int[] bilddaten = {0,1,0,0,1,0,0,0,1,0,1,1};
+	int counter = 0;
+	int counterDecode = 0;
+	ArrayList<Knoten> knotenArray = new ArrayList<>();
+	
 
-	public static void testBaumErstellen() {
+	public static void main(String[] args) {
+//		System.out.println(Integer.toBinaryString(0x73));
+		ZumAusprobieren za = new ZumAusprobieren();
+		za.testBaumErstellen();
+	}
+
+	private void testBaumErstellen() {
 		Knoten wurzel = new Knoten();
 		knotenArray.add(wurzel);// speichern des Knoten zur späteren Kontrollausgabe
 		baumErstellenRek(wurzel);
@@ -23,7 +30,7 @@ public class HuffmanUtility {
 	}
 
 
-	public static void baumErstellenRek(Knoten knoten) {
+	private void baumErstellenRek(Knoten knoten) {
 //		linker Zweig
 		counter++;
 		int bit = bits[counter];
@@ -65,7 +72,7 @@ public class HuffmanUtility {
 		}
 	}
 
-	public static void ausgabe() {
+	private void ausgabe() {
 		Integer value;
 		for (Knoten k : knotenArray) {
 			if (k.getValue() != null) value = k.getValue();
@@ -73,13 +80,13 @@ public class HuffmanUtility {
 			System.out.println("Neuer Knoten " + value);
 		}
 	}
-	public static void ausgabeBaumStruktur() {
+	private void ausgabeBaumStruktur() {
 		Knoten aktuell = knotenArray.get(0);
 		System.out.println("Wurzel 1000");
 		ausgabeBaumStrukturRek(aktuell);
 	}
 
-	public static void ausgabeBaumStrukturRek(Knoten k) {
+	private void ausgabeBaumStrukturRek(Knoten k) {
 		Integer value;
 		if (k.left == null && k.right == null) return;
 		if (k.left != null) {
@@ -96,12 +103,12 @@ public class HuffmanUtility {
 		}
 	}
 	
-	public static void decode(Knoten wurzel) {
+	private void decode(Knoten wurzel) {
 		Knoten aktuell = wurzel;
 		decodeRek(aktuell);
 	}
 
-	public static void decodeRek(Knoten k) {
+	private void decodeRek(Knoten k) {
 		while (counterDecode <= bilddaten.length) {
 			if (k.left == null && k.right == null) {
 				System.out.println(k.getValue());
@@ -121,5 +128,4 @@ public class HuffmanUtility {
 		}
 		
 	}
-
 }

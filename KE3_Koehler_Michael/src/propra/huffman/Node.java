@@ -1,16 +1,16 @@
-package propra.imageconverter;
+package propra.huffman;
 
-public class Knoten {
+public class Node {
 	
 	private Integer value;
-	Knoten left;
-	Knoten right;
+	Node left;
+	Node right;
 	
-	public Knoten(int value) {
+	public Node(int value) {
 		this.value = value;
 	}
 	
-	public Knoten() {
+	public Node() {
 		value = null;
 	}
 	

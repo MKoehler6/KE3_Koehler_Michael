@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import propra.huffman.HuffmanUtility;
+
 /**
  * @author Michael Köhler
  * Eine Instanz dieser Klasse übernimmt die Konvertierung 
@@ -59,6 +61,7 @@ public class ConverterPropraToTga {
 			uncompressHuffmanInputFile = true;
 			compressRleOutputFile = true;
 		}
+		if (typeOfCompression == 2 && !rleCompressionOutputFile) uncompressHuffmanInputFile = true;
 		convertToTga();
 	}
 
@@ -102,10 +105,17 @@ public class ConverterPropraToTga {
 			byte[] inputLine = new byte[imageWidth*3];
 			byte[] outputLineCompressed;
 			
+//			bei Bedarf Huffman-Baum auslesen
+			if (uncompressHuffmanInputFile) {
+				HuffmanUtility.readHuffmanTree(bufferedInputStream);
+			}
+			
 			for (int line = 0; line < imageHeight; line++) {
 //				Einlesen einer Bildlinie
 				if (uncompressRleInputFile) {
 					inputLine = Utility.uncompressInputLine(bufferedInputStream, imageWidth);
+				} else if (uncompressHuffmanInputFile) {
+					inputLine = HuffmanUtility.decodeHuffman(bufferedInputStream, imageWidth);
 				} else {
 					for (int pixel = 0; pixel < imageWidth; pixel++) {
 						inputPixel = bufferedInputStream.readNBytes(3);
