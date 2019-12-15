@@ -1,7 +1,13 @@
 package propra.huffman;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import propra.imageconverter.ConverterException;
 
 public class HuffmanUtility {
 	
@@ -12,6 +18,10 @@ public class HuffmanUtility {
 	static int[] bilddaten = {0,1,0,0,1,0,0,0,1,0,1,1};
 	static int counter = 0;
 	static int counterDecode = 0;
+	static int counterAllBitsOfTree;
+	static int counterBitsInOneByte;
+	static int nextByte;
+	static int[] bitArray;
 	static ArrayList<Knoten> knotenArray = new ArrayList<>();
 	static ArrayList<Node> nodeArray = new ArrayList<>();
 
@@ -24,17 +34,28 @@ public class HuffmanUtility {
 		decode(knotenArray.get(0));
 	}
 
-	public static void readHuffmanTree(BufferedInputStream bufferedInputStream) {
-		Node root = new Node();
-		nodeArray.add(root);// speichern des Knoten zur späteren Kontrollausgabe
-		readHuffmanTreeRecursion(root, bufferedInputStream);
-		ausgabeBaumStruktur();
+	public static int readHuffmanTree(File inputFile) throws ConverterException {
+		try {
+			FileInputStream fileInputStream = new FileInputStream(inputFile);
+			BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+			bufferedInputStream.skip(28);
+			int bit = readNextBit(bufferedInputStream); // lies erstes Bit: das ist die Wurzel, ist immer 0
+			Node root = new Node();
+			nodeArray.add(root);// speichern des Knoten zur späteren Kontrollausgabe
+			readHuffmanTreeRecursion(root, bufferedInputStream);
+			ausgabeBaumStruktur();
+		} catch (FileNotFoundException e) {
+			throw new ConverterException("Datei kann nicht gefunden werden");
+		} catch (IOException e) {
+			throw new ConverterException("Beim Lesen der Datei ist ein Fehler aufgetreten");
+		}
+		return counterAllBitsOfTree;
 	}
 	
-	public static void readHuffmanTreeRecursion(Node node, BufferedInputStream bufferedInputStream) {
+	public static void readHuffmanTreeRecursion(Node node, BufferedInputStream bufferedInputStream) throws ConverterException {
 //		linker Zweig
 		counter++;
-		int bit = bits[counter];
+		int bit = readNextBit(bufferedInputStream);
 					
 		if (bit == 0) {
 			Node newNode = new Node();
@@ -45,7 +66,7 @@ public class HuffmanUtility {
 			int value = 0;
 			counter++;
 			for (double i = 0; i < 8; i++) {
-				value = value + bits[counter + (int) i] * (int)(Math.pow(2.0, 7-i));
+				value = value + readNextBit(bufferedInputStream) * (int)(Math.pow(2.0, 7-i));
 			}
 			counter += 8;
 			Node newNode = new Node(value);
@@ -54,7 +75,7 @@ public class HuffmanUtility {
 		}
 		
 //		rechter Zweig
-		bit = bits[counter];
+		bit = readNextBit(bufferedInputStream);
 		if (bit == 0) {
 			Node newNode = new Node();
 			node.right = newNode; // neuer innerer Knoten wird rechts angehängt
@@ -64,13 +85,39 @@ public class HuffmanUtility {
 			int value = 0;
 			counter++;
 			for (double i = 0; i < 8; i++) {
-				value = value + bits[counter + (int) i] * (int)(Math.pow(2.0, 7-i));
+				value = value + readNextBit(bufferedInputStream) * (int)(Math.pow(2.0, 7-i));
 			}
 			counter += 8;
 			Node newNode = new Node(value);
 			node.right = newNode; // Blatt mit Wert wird rechts angehängt
 			nodeArray.add(newNode); // speichern des Knoten zur späteren Kontrollausgabe
 		}
+	}
+	
+	private static int readNextBit(BufferedInputStream bufferedInputStream) throws ConverterException {
+		int bit;
+		if (counterBitsInOneByte == 0) {
+			try {
+				nextByte = bufferedInputStream.read();
+				System.out.println(nextByte);
+				String bitString = Integer.toBinaryString(nextByte);
+				bitArray = new int [8];
+				for (int i = 0; i < bitString.length(); i++) {
+					bitArray[7-i] = Integer.parseInt(bitString.substring(bitString.length()-1-i, bitString.length()-i));
+				}
+			} catch (IOException e) {
+				throw new ConverterException("Beim Lesen der Datei ist ein Fehler aufgetreten");
+			}
+		}
+		bit = bitArray[counterBitsInOneByte];
+		counterBitsInOneByte++;
+		if (counterBitsInOneByte == 8) counterBitsInOneByte = 0;
+		for (int i = 0; i < bitArray.length; i++) {
+			System.out.print(bitArray[i]);
+		}
+		System.out.println();
+		System.out.println(bit);
+		return bit;
 	}
 	
 	public static byte[] decodeHuffman (BufferedInputStream bufferedInputStream, int imageWidth) {
@@ -154,12 +201,12 @@ public class HuffmanUtility {
 		}
 	}
 	public static void ausgabeBaumStruktur() {
-		Knoten aktuell = knotenArray.get(0);
+		Node aktuell = nodeArray.get(0);
 		System.out.println("Wurzel 1000");
 		ausgabeBaumStrukturRek(aktuell);
 	}
 
-	public static void ausgabeBaumStrukturRek(Knoten k) {
+	public static void ausgabeBaumStrukturRek(Node k) {
 		Integer value;
 		if (k.left == null && k.right == null) return;
 		if (k.left != null) {

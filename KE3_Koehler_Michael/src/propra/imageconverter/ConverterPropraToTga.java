@@ -107,7 +107,7 @@ public class ConverterPropraToTga {
 			
 //			bei Bedarf Huffman-Baum auslesen
 			if (uncompressHuffmanInputFile) {
-				HuffmanUtility.readHuffmanTree(bufferedInputStream);
+				int bitCounter = HuffmanUtility.readHuffmanTree(inputFile);
 			}
 			
 			for (int line = 0; line < imageHeight; line++) {
