@@ -15,7 +15,8 @@ public class ZumAusprobieren {
 	
 
 	public static void main(String[] args) {
-		System.out.println(Integer.toBinaryString(2));
+		System.out.println(Integer.toBinaryString(0));
+		System.out.println(Integer.valueOf(255).byteValue());
 //		ZumAusprobieren za = new ZumAusprobieren();
 //		za.testBaumErstellen();
 	}

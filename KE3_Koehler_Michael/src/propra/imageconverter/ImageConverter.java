@@ -20,6 +20,7 @@ public class ImageConverter {
 			startWithoutMain(args);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
+			e.printStackTrace();
 			System.exit(123);
 		}
 		
