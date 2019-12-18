@@ -17,6 +17,7 @@ public class ZumAusprobieren {
 	int[] treeAndEncodedImageData = new int[41];
 	HashMap<Integer,Double> byteValuesWithCounter = new HashMap<>();
 	ArrayList<Node> nodeArrayForCreateTree = new ArrayList<>();
+	HashMap<Integer,ArrayList<Integer>> codeBook = new HashMap<>();
 	int counter = 0;
 	int counterDecode = 0;
 	int counterEncode = 0;
@@ -62,10 +63,16 @@ public class ZumAusprobieren {
 		for (int i = 0; i < treeAndEncodedImageData.length; i++) {
 			System.out.print(treeAndEncodedImageData[i] + ",");
 		}
+		System.out.println();
+		for (Integer integer : codeBook.keySet()) {
+			System.out.println(integer + " " + codeBook.get(integer));
+		}
+		writeCodeBook();
 	}
 	
 	private void writeCodeOfTreeInImage() {
 		Node root = nodeArrayForCreateTree.get(0);
+		root.setRoot(true); // root wird markiert, braucht man später zur Erstellung des CodeBooks
 		writeCodeOfTreeInImageRecursion(root);
 	}
 	
@@ -73,7 +80,6 @@ public class ZumAusprobieren {
 		if (node.left == null && node.right == null) {
 			writeNextBit(1);
 			writeValue(node);
-//			return;
 		} else {
 			writeNextBit(0);
 		}
@@ -93,8 +99,15 @@ public class ZumAusprobieren {
 	}
 	
 	private void writeValue(Node node) {
+//		Kopieren des Arrays bitCode, um es mit dem Value in der HashMap zu speichern 
+		ArrayList<Integer> bitCode = new ArrayList<>();
+		codeBook.put(node.getValue(), bitCode);
 		treeAndEncodedImageData[counterEncode] = node.getValue();
 		counterEncode++;
+	}
+	
+	private void writeCodeBook() {
+		
 	}
 
 	private void createHuffmanTree() {
@@ -105,6 +118,8 @@ public class ZumAusprobieren {
 			newNode.setRelativeFrequency(node1.getRelativeFrequency() + node2.getRelativeFrequency());
 			newNode.left = node1;
 			newNode.right = node2;
+			node1.setPathToParent(0);
+			node2.setPathToParent(1);
 			nodeArrayForCreateTree.remove(node1);
 			nodeArrayForCreateTree.remove(node2);
 			nodeArrayForCreateTree.add(newNode);
@@ -127,6 +142,9 @@ public class ZumAusprobieren {
 			nodeArrayForCreateTree.set(indexMin, temp);
 		}
 	}
+	
+	
+//	********************************************************************************
 
 	private void testBaumErstellen() {
 		Knoten wurzel = new Knoten();
