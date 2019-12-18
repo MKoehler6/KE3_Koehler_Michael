@@ -5,6 +5,7 @@ public class Node {
 	private Integer value;
 	Node left;
 	Node right;
+	Node parent;
 	private Double relativeFrequency;
 	private int pathToParent;
 	private boolean root = false;

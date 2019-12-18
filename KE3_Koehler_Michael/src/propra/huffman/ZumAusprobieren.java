@@ -17,6 +17,7 @@ public class ZumAusprobieren {
 	int[] treeAndEncodedImageData = new int[41];
 	HashMap<Integer,Double> byteValuesWithCounter = new HashMap<>();
 	ArrayList<Node> nodeArrayForCreateTree = new ArrayList<>();
+	ArrayList<Node> CopyNodeArrayForCreateTree = new ArrayList<>();
 	HashMap<Integer,ArrayList<Integer>> codeBook = new HashMap<>();
 	int counter = 0;
 	int counterDecode = 0;
@@ -49,6 +50,7 @@ public class ZumAusprobieren {
 			Node node = new Node(integer);
 			node.setRelativeFrequency(byteValuesWithCounter.get(integer));
 			nodeArrayForCreateTree.add(node);
+			CopyNodeArrayForCreateTree.add(node);
 		}
 		sortNodeArray();
 		for (int i = 0; i < nodeArrayForCreateTree.size(); i++) {
@@ -63,11 +65,11 @@ public class ZumAusprobieren {
 		for (int i = 0; i < treeAndEncodedImageData.length; i++) {
 			System.out.print(treeAndEncodedImageData[i] + ",");
 		}
+		writeCodeBook();
 		System.out.println();
 		for (Integer integer : codeBook.keySet()) {
 			System.out.println(integer + " " + codeBook.get(integer));
 		}
-		writeCodeBook();
 	}
 	
 	private void writeCodeOfTreeInImage() {
@@ -107,7 +109,15 @@ public class ZumAusprobieren {
 	}
 	
 	private void writeCodeBook() {
-		
+		for (Node node : CopyNodeArrayForCreateTree) {
+			ArrayList<Integer> bitCode = new ArrayList<>();
+			Node current = node;
+			while (!current.isRoot()) {
+				bitCode.add(0, current.getPathToParent());
+				current = current.parent;
+			}
+			codeBook.put(node.getValue(),bitCode);
+		}
 	}
 
 	private void createHuffmanTree() {
@@ -118,8 +128,10 @@ public class ZumAusprobieren {
 			newNode.setRelativeFrequency(node1.getRelativeFrequency() + node2.getRelativeFrequency());
 			newNode.left = node1;
 			newNode.right = node2;
-			node1.setPathToParent(0);
-			node2.setPathToParent(1);
+			node1.setPathToParent(0); // hier wird gespeichert, ob der Knoten links oder rechts am
+			node2.setPathToParent(1); // Elternknoten hängt, dient später der Erstellung des CodeBooks
+			node1.parent = newNode;	// der Elternknoten wird gespeichert
+			node2.parent = newNode;
 			nodeArrayForCreateTree.remove(node1);
 			nodeArrayForCreateTree.remove(node2);
 			nodeArrayForCreateTree.add(newNode);
