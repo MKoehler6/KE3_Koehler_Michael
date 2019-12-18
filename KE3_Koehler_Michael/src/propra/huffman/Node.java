@@ -5,6 +5,7 @@ public class Node {
 	private Integer value;
 	Node left;
 	Node right;
+	private Double relativeFrequency;
 	
 	public Node(int value) {
 		this.value = value;
@@ -18,4 +19,12 @@ public class Node {
 		return value;
 	}
 
+	public Double getRelativeFrequency() {
+		return relativeFrequency;
+	}
+
+	public void setRelativeFrequency(Double relativeFrequency) {
+		this.relativeFrequency = relativeFrequency;
+	}
+	
 }
