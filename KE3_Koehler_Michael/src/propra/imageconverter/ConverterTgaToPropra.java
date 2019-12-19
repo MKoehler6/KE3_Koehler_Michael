@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import propra.huffman.HuffmanEncoding;
+
 /**
  * @author Michael Koehler
  * Eine Instanz dieser Klasse übernimmt die Konvertierung vom
@@ -30,8 +32,7 @@ public class ConverterTgaToPropra {
 	private long sizeOfDataSegmentOutputFile = 0;
 	private long[] anbn = {0,1}; // fuer die Pruefsummenberechnung, speichert An und Bn zwischen
 	private long calculatedCheckSum;
-	private boolean uncompressInputFile = false;
-	private boolean compressOutputFile = false;
+	private boolean uncompressRleInputFile = false;
 
 	public ConverterTgaToPropra(String inputPath, String outputPath, boolean rleCompressionOutputFile,
 			boolean huffmanCompressionOutputFile) throws ConverterException {
@@ -46,12 +47,18 @@ public class ConverterTgaToPropra {
 		imageHeight = tgaFormat.getImageHeight();
 		imageType = tgaFormat.getImageType();
 		
-		if (tgaFormat.getImageType() == 10 && !rleCompressionOutputFile) uncompressInputFile = true;
-		if (tgaFormat.getImageType() == 2 && rleCompressionOutputFile) compressOutputFile = true;
-		if (tgaFormat.getImageType() == 10 && rleCompressionOutputFile) {
-			uncompressInputFile = true;
-			compressOutputFile = true;
-		}
+//		if (tgaFormat.getImageType() == 10 && !rleCompressionOutputFile) uncompressRleInputFile = true;
+//		if (tgaFormat.getImageType() == 2 && rleCompressionOutputFile) compressRleOutputFile = true;
+//		if (tgaFormat.getImageType() == 2 && huffmanCompressionOutputFile) compressHuffmanOutputFile = true;
+//		if (tgaFormat.getImageType() == 10 && rleCompressionOutputFile) {
+//			uncompressRleInputFile = true;
+//			compressRleOutputFile = true;
+//		}
+//		if (tgaFormat.getImageType() == 10 && huffmanCompressionOutputFile) {
+//			compressHuffmanOutputFile = true;
+//			compressRleOutputFile = true;
+//		}
+		if (tgaFormat.getImageType() == 10) uncompressRleInputFile = true;
 		convertToPropra();
 	}
 	
@@ -92,9 +99,11 @@ public class ConverterTgaToPropra {
 			byte[] inputLine = new byte[imageWidth*3];
 			byte[] outputLineCompressed;
 			
+			byte[] encodedHuffmanTree = HuffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
+			
 			for (int line = 0; line < imageHeight; line++) {
 //				Einlesen einer Bildlinie
-				if (uncompressInputFile) {
+				if (uncompressRleInputFile) {
 					inputLine = Utility.uncompressInputLine(bufferedInputStream, imageWidth);
 				} else {
 					for (int pixel = 0; pixel < imageWidth; pixel++) {
@@ -105,7 +114,7 @@ public class ConverterTgaToPropra {
 					}
 				}
 				
-				if (compressOutputFile) 
+				if (rleCompressionOutputFile) 
 				{
 //					Pixelreihenfolge ändern, BGR --> GBR
 					for (int pixel = 0; pixel < imageWidth; pixel++) 
@@ -123,8 +132,7 @@ public class ConverterTgaToPropra {
 						calculateCheckSum(outputByteCompressed);
 						bufferedOutputStream.write(outputByteCompressed);
 					}
-				} 
-				if (!compressOutputFile){
+				} else {
 //					konvertieren, Pruefsumme pixelweise berechnen und in OutputFile schreiben
 					for (int pixel = 0; pixel < imageWidth; pixel++) {
 						for (int i = 0; i < 3; i++) {

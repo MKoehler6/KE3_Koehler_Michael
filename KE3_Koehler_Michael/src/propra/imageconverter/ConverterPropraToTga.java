@@ -105,7 +105,7 @@ public class ConverterPropraToTga {
 			byte[] inputLine = new byte[imageWidth*3];
 			byte[] outputLineCompressed;
 			
-//			bei Bedarf Huffman-Baum auslesen
+//			wenn Input-Datei Huffman-kodiert ist: Huffman-Baum auslesen
 			if (uncompressHuffmanInputFile) {
 				HuffmanUtility.readHuffmanTree(inputFile);
 				bufferedInputStream.skip(HuffmanUtility.counterAllBitsOfTree/8 + 1); // Huffman-Baum und dann 
@@ -142,8 +142,7 @@ public class ConverterPropraToTga {
 						outputByteCompressed[0] = outputLineCompressed[i];
 						bufferedOutputStream.write(outputByteCompressed);
 					}
-				} 
-				if (!compressRleOutputFile){
+				} else {
 //					konvertieren und in OutputFile schreiben
 					for (int pixel = 0; pixel < imageWidth; pixel++) {
 						for (int i = 0; i < 3; i++) {
