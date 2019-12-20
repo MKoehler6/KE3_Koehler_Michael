@@ -1,6 +1,7 @@
 package propra.huffman;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,8 +21,9 @@ public class HuffmanEncoding {
 	private static ArrayList<Node> CopyNodeArrayForCreateTree = new ArrayList<>();
 	private static ArrayList<Integer> encodedHuffmanTreeArrayList = new ArrayList<>();
 	private static HashMap<Integer,ArrayList<Integer>> codeBook = new HashMap<>();
-	private static int counter = 0;
-	private static int counterDecode = 0;
+	static int counterBitsInOneByte;
+	static int bitsRemainingInByte = 0; // übrig gebliebene Bits, wenn Byte noch nicht vollständig verarbeitet
+	static boolean writeHuffmanTreeFirst = true;
 
 	public static byte[] createHuffmanTreeAndCodeBook(File inputFile, int imageWidth, int imageHeight) throws ConverterException {
 		try {
@@ -48,15 +50,16 @@ public class HuffmanEncoding {
 				CopyNodeArrayForCreateTree.add(node);
 			}
 			sortNodeArray();
-			for (int i = 0; i < nodeArrayForCreateTree.size(); i++) {
-				System.out.println(nodeArrayForCreateTree.get(i).getRelativeFrequency() + " " + nodeArrayForCreateTree.get(i).getValue());
-			}
 			createHuffmanTree();
 			for (int i = 0; i < nodeArrayForCreateTree.size(); i++) {
 				System.out.println("* " + nodeArrayForCreateTree.get(i).getRelativeFrequency());
 			}
 	//		ausgabeBaumStruktur(nodeArrayForCreateTree);
 			writeCodeOfTreeInImage();
+			for (int i = 0; i < encodedHuffmanTreeArrayList.size(); i++) {
+				System.out.print(encodedHuffmanTreeArrayList.get(i) + ",");
+			}
+			System.out.println();
 			writeCodeBook();
 			for (Integer integer : codeBook.keySet()) {
 				System.out.println(integer + " " + codeBook.get(integer));
@@ -99,14 +102,23 @@ public class HuffmanEncoding {
 	}
 	
 	private static void writeNextBit(int bit) {
+		
 		encodedHuffmanTreeArrayList.add(bit);
 	}
 	
 	private static void writeValue(Node node) {
 //		Kopieren des Arrays bitCode, um es mit dem Value in der HashMap zu speichern 
 		ArrayList<Integer> bitCode = new ArrayList<>();
-		codeBook.put(node.getValue(), bitCode);
-		encodedHuffmanTreeArrayList.add(node.getValue());
+		int bit;
+		Integer value = node.getValue();
+		codeBook.put(value, bitCode);
+		for (int i = 7; i >= 0; i--) {
+			bit = value/(int)(Math.pow(2, i));
+			value = value - bit*(int)(Math.pow(2, i));
+			encodedHuffmanTreeArrayList.add(bit);
+			System.out.print(bit + ";");
+		}
+		System.out.println();
 	}
 	
 	private static void writeCodeBook() {
@@ -154,6 +166,36 @@ public class HuffmanEncoding {
 			nodeArrayForCreateTree.set(i, nodeArrayForCreateTree.get(indexMin));
 			nodeArrayForCreateTree.set(indexMin, temp);
 		}
+	}
+	
+	public static byte[] writeHuffmanEncodedPixel(byte[] inputLine) {
+		if (writeHuffmanTreeFirst) {
+			writeHuffmanTreeFirst = false;
+			return writeHuffmanTree();
+		}
+		byte[] outputLine = new byte[3];
+		
+		return outputLine;
+	}
+	
+	private static byte[] writeHuffmanTree() {
+		int byteValue = 0;
+		counterBitsInOneByte = 0;
+		ArrayList<Integer> huffmanTree = new ArrayList<>();
+		for (int i = 0; i < encodedHuffmanTreeArrayList.size(); i++) {
+			byteValue = byteValue + encodedHuffmanTreeArrayList.get(i) * (int)(Math.pow(2, 7-counterBitsInOneByte));
+			counterBitsInOneByte++;
+			if (counterBitsInOneByte == 8) {
+				counterBitsInOneByte = 0;
+				huffmanTree.add(byteValue);
+			}
+		}
+		bitsRemainingInByte = 8 - counterBitsInOneByte;
+		byte[] huffmanTreeByteArray = new byte[huffmanTree.size()];
+		for (int i = 0; i < huffmanTreeByteArray.length; i++) {
+			huffmanTreeByteArray[i] = huffmanTree.get(i).byteValue();
+		}
+		return huffmanTreeByteArray;
 	}
 	
 

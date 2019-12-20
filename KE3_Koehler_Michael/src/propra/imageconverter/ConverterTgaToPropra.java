@@ -99,7 +99,9 @@ public class ConverterTgaToPropra {
 			byte[] inputLine = new byte[imageWidth*3];
 			byte[] outputLineCompressed;
 			
-			byte[] encodedHuffmanTree = HuffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
+			if (huffmanCompressionOutputFile) {
+				byte[] encodedHuffmanTree = HuffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
+			}
 			
 			for (int line = 0; line < imageHeight; line++) {
 //				Einlesen einer Bildlinie
@@ -113,17 +115,11 @@ public class ConverterTgaToPropra {
 						}
 					}
 				}
-				
-				if (rleCompressionOutputFile) 
+//				Ausgabe der Bilddaten zeilenweise
+				if (rleCompressionOutputFile) // Output-Datei soll rle kompriniert werden
 				{
 //					Pixelreihenfolge ändern, BGR --> GBR
-					for (int pixel = 0; pixel < imageWidth; pixel++) 
-					{
-						byte temp;
-						temp = inputLine[pixel*3];
-						inputLine[pixel*3] = inputLine[pixel*3 + 1];
-						inputLine[pixel*3 + 1] = temp;
-					}
+					inputLine = convertLineToPropra(inputLine);
 //					Linie komprimieren
 					outputLineCompressed = Utility.compressOutputLine(inputLine, imageWidth);
 //					Linie in Ausgabe-Datei schreiben und Pruefsumme byteweise berechnen
@@ -132,13 +128,19 @@ public class ConverterTgaToPropra {
 						calculateCheckSum(outputByteCompressed);
 						bufferedOutputStream.write(outputByteCompressed);
 					}
-				} else {
+				} else if (huffmanCompressionOutputFile){ // Output-Datei soll Huffman kompriniert werden
+//					Pixelreihenfolge ändern, BGR --> GBR
+					inputLine = convertLineToPropra(inputLine);
+					outputPixel = HuffmanEncoding.writeHuffmanEncodedPixel(inputLine);
+					calculateCheckSum(outputPixel);
+					bufferedOutputStream.write(outputPixel);
+				} else { // Output-Datei bleibt unkomprimiert 
 //					konvertieren, Pruefsumme pixelweise berechnen und in OutputFile schreiben
 					for (int pixel = 0; pixel < imageWidth; pixel++) {
 						for (int i = 0; i < 3; i++) {
 							inputPixel[i] = inputLine[pixel*3 + i];
 						}
-						outputPixel = convertPixelToPropra(inputPixel);
+						outputPixel = convertOnePixelToPropra(inputPixel);
 						calculateCheckSum(outputPixel);
 						bufferedOutputStream.write(outputPixel);
 					}
@@ -191,12 +193,23 @@ public class ConverterTgaToPropra {
 		return result;
 	}
 	
-	private byte[] convertPixelToPropra(byte[] inputPixel) {
+	private byte[] convertOnePixelToPropra(byte[] inputPixel) {
 		byte[] temp = new byte[3];
 		temp[0] = inputPixel[1];
 		temp[1] = inputPixel[0];
 		temp[2] = inputPixel[2];
 		return temp;
+	}
+	
+	private byte[] convertLineToPropra(byte[] inputLine) {
+		for (int pixel = 0; pixel < imageWidth; pixel++) 
+		{
+			byte temp;
+			temp = inputLine[pixel*3];
+			inputLine[pixel*3] = inputLine[pixel*3 + 1];
+			inputLine[pixel*3 + 1] = temp;
+		}
+		return inputLine;
 	}
 
 }

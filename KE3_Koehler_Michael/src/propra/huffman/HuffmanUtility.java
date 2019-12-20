@@ -111,6 +111,7 @@ public class HuffmanUtility {
 		counterBitsInOneByte++;
 		if (counterBitsInOneByte == 8) counterBitsInOneByte = 0;
 		counterAllBitsOfTree++;
+		System.out.println("counterAllBitsOfTree " + counterAllBitsOfTree);
 		return bit;
 	}
 	
