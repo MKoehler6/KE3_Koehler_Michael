@@ -90,10 +90,10 @@ public class PropraFormat implements IFormat {
 	 * überprüft, ob die Anzahl der Pixel mit den Angaben im Header übereinstimmen
 	 */
 	private void checkCorrectAmountOfPixel() throws ConverterException{
-		if (sizeOfDataSegment != imageWidth * imageHeight * 3) 
-			throw new ConverterException("Pixelanzahl stimmt nicht mit Breite x Höhe im Header überein");
+//		if (sizeOfDataSegment != imageWidth * imageHeight * 3) 
+//			throw new ConverterException("Pixelanzahl stimmt nicht mit Breite x Höhe im Header überein");
 	}
-	
+//	--input=test_05_huffman_copy.propra --output=test_05_copy.tga --compression=uncompressed
 	/**
 	 * liest das komplette Datensegment und berechnet dabei byteweise die Pruefsumme
 	 */

@@ -22,6 +22,7 @@ public class HuffmanEncoding {
 	private static ArrayList<Integer> encodedHuffmanTreeArrayList = new ArrayList<>();
 	private static HashMap<Integer,ArrayList<Integer>> codeBook = new HashMap<>();
 	static int counterBitsInOneByte;
+	static ArrayList<Integer> bitArrayForOneByte = new ArrayList<>();
 	static int bitsRemainingInByte = 0; // übrig gebliebene Bits, wenn Byte noch nicht vollständig verarbeitet
 	static boolean writeHuffmanTreeFirst = true;
 
@@ -55,7 +56,7 @@ public class HuffmanEncoding {
 				System.out.println("* " + nodeArrayForCreateTree.get(i).getRelativeFrequency());
 			}
 	//		ausgabeBaumStruktur(nodeArrayForCreateTree);
-			writeCodeOfTreeInImage();
+			writeCodeOfTreeInArray();
 			for (int i = 0; i < encodedHuffmanTreeArrayList.size(); i++) {
 				System.out.print(encodedHuffmanTreeArrayList.get(i) + ",");
 			}
@@ -78,13 +79,13 @@ public class HuffmanEncoding {
 		return encodedHuffmanTree;
 	}
 	
-	private static void writeCodeOfTreeInImage() {
+	private static void writeCodeOfTreeInArray() {
 		Node root = nodeArrayForCreateTree.get(0);
 		root.setRoot(true); // root wird markiert, braucht man später zur Erstellung des CodeBooks
-		writeCodeOfTreeInImageRecursion(root);
+		writeCodeOfTreeInArrayRecursion(root);
 	}
 	
-	private static void writeCodeOfTreeInImageRecursion(Node node) {
+	private static void writeCodeOfTreeInArrayRecursion(Node node) {
 		if (node.left == null && node.right == null) {
 			writeNextBit(1);
 			writeValue(node);
@@ -93,11 +94,11 @@ public class HuffmanEncoding {
 		}
 //		linker Teilbaum
 		if (node.left != null) {
-			writeCodeOfTreeInImageRecursion(node.left);
+			writeCodeOfTreeInArrayRecursion(node.left);
 		}
 //		rechter Teilbaum
 		if (node.right != null) {
-			writeCodeOfTreeInImageRecursion(node.right);
+			writeCodeOfTreeInArrayRecursion(node.right);
 		}
 	}
 	
@@ -168,35 +169,47 @@ public class HuffmanEncoding {
 		}
 	}
 	
-	public static byte[] writeHuffmanEncodedPixel(byte[] inputLine) {
-		if (writeHuffmanTreeFirst) {
+	public static byte[] writeEncodedPixelInOutputLine(byte[] inputLine) {
+		ArrayList<Integer> outputLineArrayList = new ArrayList<>();
+//		an den Anfang des Datensegments wird erst der Huffmann-Tree geschrieben
+		if (writeHuffmanTreeFirst) { 
 			writeHuffmanTreeFirst = false;
-			return writeHuffmanTree();
+			for (int i = 0; i < encodedHuffmanTreeArrayList.size(); i++) {
+				bitArrayForOneByte.add(encodedHuffmanTreeArrayList.get(i));
+				if (bitArrayForOneByte.size() == 8) {
+					outputLineArrayList.add(toByteValue(bitArrayForOneByte));
+					bitArrayForOneByte.clear();
+				}
+			}
 		}
-		byte[] outputLine = new byte[3];
+//		restliche Bits in bitArrayForOneByte aus dem letzten Aufruf der Methode sind noch vorhanden 
+//		und werden jetzt berücksichtigt
+		for (int i = 0; i < inputLine.length; i++) {
+			ArrayList<Integer> codeForValue = codeBook.get(Byte.toUnsignedInt(inputLine[i]));
+			for (int j = 0; j < codeForValue.size(); j++) {
+				bitArrayForOneByte.add(codeForValue.get(j));
+				if (bitArrayForOneByte.size() == 8) {
+					outputLineArrayList.add(toByteValue(bitArrayForOneByte));
+					bitArrayForOneByte.clear();
+				}
+			}
+		}
+		
+		byte[] outputLine = new byte[outputLineArrayList.size()];
+		for (int i = 0; i < outputLine.length; i++) {
+			outputLine[i] = outputLineArrayList.get(i).byteValue();
+		}
 		
 		return outputLine;
 	}
 	
-	private static byte[] writeHuffmanTree() {
+	private static int toByteValue(ArrayList<Integer> bitArrayForOneByte) {
 		int byteValue = 0;
-		counterBitsInOneByte = 0;
-		ArrayList<Integer> huffmanTree = new ArrayList<>();
-		for (int i = 0; i < encodedHuffmanTreeArrayList.size(); i++) {
-			byteValue = byteValue + encodedHuffmanTreeArrayList.get(i) * (int)(Math.pow(2, 7-counterBitsInOneByte));
-			counterBitsInOneByte++;
-			if (counterBitsInOneByte == 8) {
-				counterBitsInOneByte = 0;
-				huffmanTree.add(byteValue);
-			}
+		for (int i = 0; i < 8; i++) {
+			byteValue = byteValue + bitArrayForOneByte.get(i) * (int)(Math.pow(2, 7-i));
 		}
-		bitsRemainingInByte = 8 - counterBitsInOneByte;
-		byte[] huffmanTreeByteArray = new byte[huffmanTree.size()];
-		for (int i = 0; i < huffmanTreeByteArray.length; i++) {
-			huffmanTreeByteArray[i] = huffmanTree.get(i).byteValue();
-		}
-		return huffmanTreeByteArray;
+//		System.out.print(byteValue + ",");
+		return byteValue;
 	}
-	
 
 }

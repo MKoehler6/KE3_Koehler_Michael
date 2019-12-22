@@ -85,6 +85,7 @@ public class ConverterTgaToPropra {
 			bufferedOutputStream.write(24);
 //			schreibe Kompressionstyp
 			if (rleCompressionOutputFile) bufferedOutputStream.write(1);
+			else if (huffmanCompressionOutputFile) bufferedOutputStream.write(2);
 			else bufferedOutputStream.write(0);
 //			schreibe Platzhalter fuer Datensegmentgroesse und Pruefsumme
 			for (int i = 0; i < 12; i++) {
@@ -128,10 +129,10 @@ public class ConverterTgaToPropra {
 						calculateCheckSum(outputByteCompressed);
 						bufferedOutputStream.write(outputByteCompressed);
 					}
-				} else if (huffmanCompressionOutputFile){ // Output-Datei soll Huffman kompriniert werden
+				} else if (huffmanCompressionOutputFile){ // Output-Datei soll Huffman komprimiert werden
 //					Pixelreihenfolge ändern, BGR --> GBR
 					inputLine = convertLineToPropra(inputLine);
-					outputPixel = HuffmanEncoding.writeHuffmanEncodedPixel(inputLine);
+					outputPixel = HuffmanEncoding.writeEncodedPixelInOutputLine(inputLine);
 					calculateCheckSum(outputPixel);
 					bufferedOutputStream.write(outputPixel);
 				} else { // Output-Datei bleibt unkomprimiert 
