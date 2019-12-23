@@ -130,8 +130,7 @@ public class ConverterTgaToPropra {
 						bufferedOutputStream.write(outputByteCompressed);
 					}
 				} else if (huffmanCompressionOutputFile){ // Output-Datei soll Huffman komprimiert werden
-//					Pixelreihenfolge ändern, BGR --> GBR
-					inputLine = convertLineToPropra(inputLine);
+					inputLine = convertLineToPropra(inputLine); // Pixelreihenfolge ändern, BGR --> GBR
 					outputPixel = HuffmanEncoding.writeEncodedPixelInOutputLine(inputLine);
 					calculateCheckSum(outputPixel);
 					bufferedOutputStream.write(outputPixel);
@@ -146,6 +145,12 @@ public class ConverterTgaToPropra {
 						bufferedOutputStream.write(outputPixel);
 					}
 				}
+			}
+//			bei Huffman Kodierung: wenn die restlichen Bits kein vollständiges Byte ergeben, wird
+//			jetzt das letzte Byte mit 0 aufgefüllt (Padding) und geschrieben
+			if (HuffmanEncoding.bitArrayForOneByte.size() > 0) {
+				while (HuffmanEncoding.bitArrayForOneByte.size() < 8) HuffmanEncoding.bitArrayForOneByte.add(0);
+				bufferedOutputStream.write(HuffmanEncoding.toByteValue(HuffmanEncoding.bitArrayForOneByte));
 			}
 			
 //			Header anpassen

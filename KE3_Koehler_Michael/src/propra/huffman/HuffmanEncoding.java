@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-
+//--input=test_05_huffman_copy.propra --output=test_05_copy.tga --compression=uncompressed
 import propra.imageconverter.ConverterException;
 
 public class HuffmanEncoding {
@@ -22,7 +22,7 @@ public class HuffmanEncoding {
 	private static ArrayList<Integer> encodedHuffmanTreeArrayList = new ArrayList<>();
 	private static HashMap<Integer,ArrayList<Integer>> codeBook = new HashMap<>();
 	static int counterBitsInOneByte;
-	static ArrayList<Integer> bitArrayForOneByte = new ArrayList<>();
+	public static ArrayList<Integer> bitArrayForOneByte = new ArrayList<>();
 	static int bitsRemainingInByte = 0; // übrig gebliebene Bits, wenn Byte noch nicht vollständig verarbeitet
 	static boolean writeHuffmanTreeFirst = true;
 
@@ -44,7 +44,6 @@ public class HuffmanEncoding {
 	//		relative Häufigkeit ausrechnen und speichern, Knoten erstellen und Wert und Häufigkeit speichern
 			for (Integer integer : set1) {
 				byteValuesWithCounter.put(integer, byteValuesWithCounter.get(integer)/imageSizeInBytes);
-				System.out.println(integer + " " + byteValuesWithCounter.get(integer));
 				Node node = new Node(integer);
 				node.setRelativeFrequency(byteValuesWithCounter.get(integer));
 				nodeArrayForCreateTree.add(node);
@@ -52,18 +51,9 @@ public class HuffmanEncoding {
 			}
 			sortNodeArray();
 			createHuffmanTree();
-			for (int i = 0; i < nodeArrayForCreateTree.size(); i++) {
-				System.out.println("* " + nodeArrayForCreateTree.get(i).getRelativeFrequency());
-			}
-	//		ausgabeBaumStruktur(nodeArrayForCreateTree);
 			writeCodeOfTreeInArray();
-			for (int i = 0; i < encodedHuffmanTreeArrayList.size(); i++) {
-				System.out.print(encodedHuffmanTreeArrayList.get(i) + ",");
-			}
-			System.out.println();
 			writeCodeBook();
 			for (Integer integer : codeBook.keySet()) {
-				System.out.println(integer + " " + codeBook.get(integer));
 				bufferedInputStream.close();
 				fileInputStream.close();
 			}
@@ -117,9 +107,7 @@ public class HuffmanEncoding {
 			bit = value/(int)(Math.pow(2, i));
 			value = value - bit*(int)(Math.pow(2, i));
 			encodedHuffmanTreeArrayList.add(bit);
-			System.out.print(bit + ";");
 		}
-		System.out.println();
 	}
 	
 	private static void writeCodeBook() {
@@ -182,7 +170,7 @@ public class HuffmanEncoding {
 				}
 			}
 		}
-//		restliche Bits in bitArrayForOneByte aus dem letzten Aufruf der Methode sind noch vorhanden 
+//		übrig gebliebene Bits in bitArrayForOneByte aus dem letzten Aufruf der Methode sind noch vorhanden 
 //		und werden jetzt berücksichtigt
 		for (int i = 0; i < inputLine.length; i++) {
 			ArrayList<Integer> codeForValue = codeBook.get(Byte.toUnsignedInt(inputLine[i]));
@@ -194,21 +182,18 @@ public class HuffmanEncoding {
 				}
 			}
 		}
-		
 		byte[] outputLine = new byte[outputLineArrayList.size()];
 		for (int i = 0; i < outputLine.length; i++) {
 			outputLine[i] = outputLineArrayList.get(i).byteValue();
 		}
-		
 		return outputLine;
 	}
 	
-	private static int toByteValue(ArrayList<Integer> bitArrayForOneByte) {
+	public static int toByteValue(ArrayList<Integer> bitArrayForOneByte) {
 		int byteValue = 0;
 		for (int i = 0; i < 8; i++) {
 			byteValue = byteValue + bitArrayForOneByte.get(i) * (int)(Math.pow(2, 7-i));
 		}
-//		System.out.print(byteValue + ",");
 		return byteValue;
 	}
 
