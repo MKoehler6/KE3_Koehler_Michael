@@ -47,18 +47,10 @@ public class ConverterTgaToPropra {
 		imageHeight = tgaFormat.getImageHeight();
 		imageType = tgaFormat.getImageType();
 		
-//		if (tgaFormat.getImageType() == 10 && !rleCompressionOutputFile) uncompressRleInputFile = true;
-//		if (tgaFormat.getImageType() == 2 && rleCompressionOutputFile) compressRleOutputFile = true;
-//		if (tgaFormat.getImageType() == 2 && huffmanCompressionOutputFile) compressHuffmanOutputFile = true;
-//		if (tgaFormat.getImageType() == 10 && rleCompressionOutputFile) {
-//			uncompressRleInputFile = true;
-//			compressRleOutputFile = true;
-//		}
-//		if (tgaFormat.getImageType() == 10 && huffmanCompressionOutputFile) {
-//			compressHuffmanOutputFile = true;
-//			compressRleOutputFile = true;
-//		}
 		if (tgaFormat.getImageType() == 10) uncompressRleInputFile = true;
+//		bei tga-rle --> propra-huffman muss 2x konvertiert werden, zuerst in tga-uncompressed,
+//		dann kann der huffman-Baum erstellt werden, dann wird in huffman kodiert
+		
 		convertToPropra();
 	}
 	
