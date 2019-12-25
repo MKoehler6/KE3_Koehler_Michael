@@ -101,15 +101,18 @@ public class ArgumentHandler {
 			PropraFormat propraFormat = new PropraFormat(inputPath);
 			if (propraFormat.getTypeOfCompression() == 1) {
 				
+				
 			}
 			new CopyCompressDecompressPropraFile(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
 		}
 		else if (inputFormat == "tga" && outputFormat == "propra") {
-//			wenn input-Datei rle komprimiert, dann 2 Durchläufe nötig, erst rle-dekomprimieren, 
+//			wenn input-Datei rle komprimiert und output soll huffman-kodiert werden, 
+//			dann 2 Durchläufe nötig, erst rle-dekomprimieren, 
 //			dann im zweiten Durchlauf huffman-kodieren
 			TgaFormat tgaFormat = new TgaFormat(inputPath);
-			if (tgaFormat.getImageType() == 10) {
+			if (tgaFormat.getImageType() == 10 && huffmanCompressionOutputFile) {
 				outputPathTemp = outputPath.substring(0, outputPath.length()-7) + "_temp.tga";
+//				erster Durchlauf
 				new CopyCompressDecompressTgaFile(inputPath, outputPathTemp, rleCompressionOutputFile);
 				inputPath = outputPathTemp;
 				
