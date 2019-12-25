@@ -28,7 +28,7 @@ public class ConverterTgaToPropra {
 	
 	private int imageWidth;
     private int imageHeight;
-    private byte imageType;
+    private byte tgaImageType;
 	private long sizeOfDataSegmentOutputFile = 0;
 	private long[] anbn = {0,1}; // fuer die Pruefsummenberechnung, speichert An und Bn zwischen
 	private long calculatedCheckSum;
@@ -45,12 +45,9 @@ public class ConverterTgaToPropra {
 		
 		imageWidth = tgaFormat.getImageWidth();
 		imageHeight = tgaFormat.getImageHeight();
-		imageType = tgaFormat.getImageType();
+		tgaImageType = tgaFormat.getImageType();
 		
-		if (tgaFormat.getImageType() == 10) uncompressRleInputFile = true;
-//		bei tga-rle --> propra-huffman muss 2x konvertiert werden, zuerst in tga-uncompressed,
-//		dann kann der huffman-Baum erstellt werden, dann wird in huffman kodiert
-		
+		if (tgaImageType == 10) uncompressRleInputFile = true;
 		convertToPropra();
 	}
 	

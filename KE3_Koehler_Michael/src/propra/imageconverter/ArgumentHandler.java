@@ -6,6 +6,7 @@ public class ArgumentHandler {
 	private String outputPath = null;
 	private String inputFormat = null;
 	private String outputFormat = null;
+	private String outputPathTemp = null; // temporärer Pfad zum Zwischenspeichern bei 2 Durchläufen
 	private boolean encode = false;
 	private boolean decode = false;
 	private int typeOfEncoding;
@@ -96,9 +97,23 @@ public class ArgumentHandler {
 			new CopyCompressDecompressTgaFile(inputPath, outputPath, rleCompressionOutputFile);
 		}
 		else if (inputFormat == "propra" && outputFormat == "propra") {
+//			wenn input-Datei rle komprimiert, dann 2 Durchläufe nötig
+			PropraFormat propraFormat = new PropraFormat(inputPath);
+			if (propraFormat.getTypeOfCompression() == 1) {
+				
+			}
 			new CopyCompressDecompressPropraFile(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
 		}
 		else if (inputFormat == "tga" && outputFormat == "propra") {
+//			wenn input-Datei rle komprimiert, dann 2 Durchläufe nötig, erst rle-dekomprimieren, 
+//			dann im zweiten Durchlauf huffman-kodieren
+			TgaFormat tgaFormat = new TgaFormat(inputPath);
+			if (tgaFormat.getImageType() == 10) {
+				outputPathTemp = outputPath.substring(0, outputPath.length()-7) + "_temp.tga";
+				new CopyCompressDecompressTgaFile(inputPath, outputPathTemp, rleCompressionOutputFile);
+				inputPath = outputPathTemp;
+				
+			}
 			new ConverterTgaToPropra(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
 		}
 		else if (inputFormat == "propra" && outputFormat == "tga") {

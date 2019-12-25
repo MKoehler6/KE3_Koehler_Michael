@@ -27,10 +27,11 @@ public class CopyCompressDecompressPropraFile {
     private int imageHeight;
 	private long[] anbn = {0,1}; // fuer die Pruefsummenberechnung, speichert An und Bn zwischen;
 	private long calculatedCheckSum;
-	
+	private boolean huffmanCompressionOutputFile;
 	
 	public CopyCompressDecompressPropraFile(String inputPath, String outputPath, boolean rleCompressionOutputFile,
 			boolean huffmanCompressionOutputFile) throws ConverterException {
+		this.huffmanCompressionOutputFile = huffmanCompressionOutputFile;
 		inputFile = new File(inputPath);
 		outputFile = new File(outputPath);
 		propraFormat = new PropraFormat(inputPath);
