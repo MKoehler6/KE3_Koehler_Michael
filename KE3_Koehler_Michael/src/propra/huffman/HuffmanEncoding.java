@@ -1,7 +1,6 @@
 package propra.huffman;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,19 +13,19 @@ import propra.imageconverter.ConverterException;
 
 public class HuffmanEncoding {
 	
-	private static HashMap<Integer,Double> byteValuesWithCounter = new HashMap<>();
+	private HashMap<Integer,Double> byteValuesWithCounter = new HashMap<>();
 //	ArrayList zum Aufbau des Huffman-Baumes, hier werden die Knoten nach und nach rausgelöscht
-	private static ArrayList<Node> nodeArrayForCreateTree = new ArrayList<>();
+	private ArrayList<Node> nodeArrayForCreateTree = new ArrayList<>();
 //	ArrayList zum Erstellen des CodeBooks
-	private static ArrayList<Node> CopyNodeArrayForCreateTree = new ArrayList<>();
-	private static ArrayList<Integer> encodedHuffmanTreeArrayList = new ArrayList<>();
-	private static HashMap<Integer,ArrayList<Integer>> codeBook = new HashMap<>();
-	static int counterBitsInOneByte;
-	public static ArrayList<Integer> bitArrayForOneByte = new ArrayList<>();
-	static int bitsRemainingInByte = 0; // übrig gebliebene Bits, wenn Byte noch nicht vollständig verarbeitet
-	static boolean writeHuffmanTreeFirst = true;
+	private ArrayList<Node> CopyNodeArrayForCreateTree = new ArrayList<>();
+	private ArrayList<Integer> encodedHuffmanTreeArrayList = new ArrayList<>();
+	private HashMap<Integer,ArrayList<Integer>> codeBook = new HashMap<>();
+	int counterBitsInOneByte;
+	public ArrayList<Integer> bitArrayForOneByte = new ArrayList<>();
+	int bitsRemainingInByte = 0; // übrig gebliebene Bits, wenn Byte noch nicht vollständig verarbeitet
+	boolean writeHuffmanTreeFirst = true;
 
-	public static byte[] createHuffmanTreeAndCodeBook(File inputFile, int imageWidth, int imageHeight) throws ConverterException {
+	public byte[] createHuffmanTreeAndCodeBook(File inputFile, int imageWidth, int imageHeight) throws ConverterException {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(inputFile);
 			BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -67,13 +66,13 @@ public class HuffmanEncoding {
 		return encodedHuffmanTree;
 	}
 	
-	private static void writeCodeOfTreeInArray() {
+	private void writeCodeOfTreeInArray() {
 		Node root = nodeArrayForCreateTree.get(0);
 		root.setRoot(true); // root wird markiert, braucht man später zur Erstellung des CodeBooks
 		writeCodeOfTreeInArrayRecursion(root);
 	}
 	
-	private static void writeCodeOfTreeInArrayRecursion(Node node) {
+	private void writeCodeOfTreeInArrayRecursion(Node node) {
 		if (node.left == null && node.right == null) {
 			writeNextBit(1);
 			writeValue(node);
@@ -90,12 +89,12 @@ public class HuffmanEncoding {
 		}
 	}
 	
-	private static void writeNextBit(int bit) {
+	private void writeNextBit(int bit) {
 		
 		encodedHuffmanTreeArrayList.add(bit);
 	}
 	
-	private static void writeValue(Node node) {
+	private void writeValue(Node node) {
 //		Kopieren des Arrays bitCode, um es mit dem Value in der HashMap zu speichern 
 		ArrayList<Integer> bitCode = new ArrayList<>();
 		int bit;
@@ -108,7 +107,7 @@ public class HuffmanEncoding {
 		}
 	}
 	
-	private static void writeCodeBook() {
+	private void writeCodeBook() {
 		for (Node node : CopyNodeArrayForCreateTree) {
 			ArrayList<Integer> bitCode = new ArrayList<>();
 			Node current = node;
@@ -120,7 +119,7 @@ public class HuffmanEncoding {
 		}
 	}
 
-	private static void createHuffmanTree() {
+	private void createHuffmanTree() {
 		while (nodeArrayForCreateTree.size() > 1) {
 			Node node1 = nodeArrayForCreateTree.get(0);
 			Node node2 = nodeArrayForCreateTree.get(1);
@@ -139,7 +138,7 @@ public class HuffmanEncoding {
 		}
 	}
 
-	private static void sortNodeArray() {
+	private void sortNodeArray() {
 		for (int i = 0; i < nodeArrayForCreateTree.size()-1; i++) {
 			double min = nodeArrayForCreateTree.get(i).getRelativeFrequency();
 			int indexMin = i;
@@ -155,7 +154,7 @@ public class HuffmanEncoding {
 		}
 	}
 	
-	public static byte[] writeEncodedPixelInOutputLine(byte[] inputLine) {
+	public byte[] writeEncodedPixelInOutputLine(byte[] inputLine) {
 		ArrayList<Integer> outputLineArrayList = new ArrayList<>();
 //		an den Anfang des Datensegments wird erst der Huffmann-Tree geschrieben
 		if (writeHuffmanTreeFirst) { 
@@ -187,7 +186,7 @@ public class HuffmanEncoding {
 		return outputLine;
 	}
 	
-	public static int toByteValue(ArrayList<Integer> bitArrayForOneByte) {
+	public int toByteValue(ArrayList<Integer> bitArrayForOneByte) {
 		int byteValue = 0;
 		for (int i = 0; i < 8; i++) {
 			byteValue = byteValue + bitArrayForOneByte.get(i) * (int)(Math.pow(2, 7-i));

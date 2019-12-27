@@ -89,8 +89,10 @@ public class ConverterTgaToPropra {
 			byte[] inputLine = new byte[imageWidth*3];
 			byte[] outputLineCompressed;
 			
+//			wenn Output-Datei Huffman-kodiert werden soll
+			HuffmanEncoding huffmanEncoding = new HuffmanEncoding();
 			if (huffmanCompressionOutputFile) {
-				HuffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
+				huffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
 			}
 			
 			for (int line = 0; line < imageHeight; line++) {
@@ -120,7 +122,7 @@ public class ConverterTgaToPropra {
 					}
 				} else if (huffmanCompressionOutputFile){ // Output-Datei soll Huffman komprimiert werden
 					inputLine = convertLineToPropra(inputLine); // Pixelreihenfolge ändern, BGR --> GBR
-					outputLineCompressed = HuffmanEncoding.writeEncodedPixelInOutputLine(inputLine);
+					outputLineCompressed = huffmanEncoding.writeEncodedPixelInOutputLine(inputLine);
 					calculateCheckSum(outputLineCompressed);
 					bufferedOutputStream.write(outputLineCompressed);
 				} else { // Output-Datei bleibt unkomprimiert 
@@ -137,9 +139,9 @@ public class ConverterTgaToPropra {
 			}
 //			bei Huffman Kodierung: wenn die restlichen Bits kein vollständiges Byte ergeben, wird
 //			jetzt das letzte Byte mit 0 aufgefüllt (Padding) und geschrieben
-			if (HuffmanEncoding.bitArrayForOneByte.size() > 0) {
-				while (HuffmanEncoding.bitArrayForOneByte.size() < 8) HuffmanEncoding.bitArrayForOneByte.add(0);
-				bufferedOutputStream.write(HuffmanEncoding.toByteValue(HuffmanEncoding.bitArrayForOneByte));
+			if (huffmanEncoding.bitArrayForOneByte.size() > 0) {
+				while (huffmanEncoding.bitArrayForOneByte.size() < 8) huffmanEncoding.bitArrayForOneByte.add(0);
+				bufferedOutputStream.write(huffmanEncoding.toByteValue(huffmanEncoding.bitArrayForOneByte));
 			}
 			
 //			Header anpassen

@@ -132,20 +132,22 @@ public class CopyCompressDecompressPropraFile {
 			byte[] outputLineCompressed;
 			
 //			wenn Input-Datei Huffman-kodiert ist: Huffman-Baum auslesen
+			HuffmanUtility huffmanUtility = new HuffmanUtility();
 			if (uncompressHuffmanInputFile) {
-				HuffmanUtility.readHuffmanTree(inputFile);
-				bufferedInputStream.skip(HuffmanUtility.counterAllBitsOfTree/8 + 1); // Huffman-Baum und dann 
+				huffmanUtility.readHuffmanTree(inputFile);
+				bufferedInputStream.skip(huffmanUtility.counterAllBitsOfTree/8 + 1); // Huffman-Baum und dann 
 				// das nächste Byte
 			}
-			
+//			wenn Output-Datei Huffman-kodiert werden soll
+			HuffmanEncoding huffmanEncoding = new HuffmanEncoding();
 			if (huffmanCompressionOutputFile) {
-				HuffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
+				huffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
 			}
 			
 			for (int line = 0; line < imageHeight; line++) {
 //				Einlesen einer Bildlinie
 				if (uncompressHuffmanInputFile) {
-					inputLine = HuffmanUtility.decodeHuffman(bufferedInputStream, imageWidth);
+					inputLine = huffmanUtility.decodeHuffman(bufferedInputStream, imageWidth);
 				} else {
 					for (int pixel = 0; pixel < imageWidth; pixel++) {
 						inputPixel = bufferedInputStream.readNBytes(3);
@@ -164,7 +166,7 @@ public class CopyCompressDecompressPropraFile {
 						bufferedOutputStream.write(outputByteCompressed);
 					} // --input=test_05_rle_copy.propra --output=test_05_huffman5.propra --compression=huffman
 				} else if (huffmanCompressionOutputFile) {
-					outputLineCompressed = HuffmanEncoding.writeEncodedPixelInOutputLine(inputLine);
+					outputLineCompressed = huffmanEncoding.writeEncodedPixelInOutputLine(inputLine);
 					calculateCheckSum(outputLineCompressed);
 					bufferedOutputStream.write(outputLineCompressed);
 				} else { // Output-Datei bleibt unkomprimiert 

@@ -11,22 +11,17 @@ import propra.imageconverter.ConverterException;
 
 public class HuffmanUtility {
 	
-//	int[] bits = {0,0,0,0,0,0,1,1, 0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0, 1,0,0,1,1,0,1,1, 1,1,0,0,1,0,0,0, 
-//			0,1,0,1,0,0,0,1, 1,1,0,0,0,1,0,0, 1,1,0,0,1,0,1,0, 1,0,0,0,0,1,1,0, 0,1,1,1,1,1,1,1, 
-//			1,1,0,1,1,0,0,0, 0,0,0,0,1,1,0,0, 0,0,0,0,1,1,1,0, 0,0,0,0,1,0,1,1, 1,1,1,1,1,1,1,1};
-	static int[] bits = {0,0,1,1,0,0,0,0, 0,0,0,1,1,0,0,0, 0,0,0,1,0,1,1,0, 0,0,0,0,1,0,1,1, 0,0,0,0,0,1,1,0};
-	static int[] bilddaten = {0,1,0,0,1,0,0,0,1,0,1,1};
-	static int counter = 0;
-	static int counterDecode = 0;
-	public static int counterAllBitsOfTree = 0;
-	static int counterBitsInOneByte;
-	static int bitsRemainingInByte = 0; // übrig gebliebene Bits, wenn Byte noch nicht vollständig verarbeitet
-	static int nextByte;
-	static int[] bitArray;
-	static byte[] line; // Array für die dekodierten Pixel einer Bildlinie
-	static ArrayList<Node> nodeArray = new ArrayList<>();
+	int counter = 0;
+	int counterDecode = 0;
+	public int counterAllBitsOfTree = 0;
+	int counterBitsInOneByte;
+	int bitsRemainingInByte = 0; // übrig gebliebene Bits, wenn Byte noch nicht vollständig verarbeitet
+	int nextByte;
+	int[] bitArray;
+	byte[] line; // Array für die dekodierten Pixel einer Bildlinie
+	ArrayList<Node> nodeArray = new ArrayList<>();
 
-	public static void readHuffmanTree(File inputFile) throws ConverterException {
+	public void readHuffmanTree(File inputFile) throws ConverterException {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(inputFile);
 			BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -46,7 +41,7 @@ public class HuffmanUtility {
 		bitsRemainingInByte = 8-counterBitsInOneByte;
 	}
 	
-	public static void readHuffmanTreeRecursion(Node node, BufferedInputStream bufferedInputStream) throws ConverterException {
+	public void readHuffmanTreeRecursion(Node node, BufferedInputStream bufferedInputStream) throws ConverterException {
 //		linker Zweig
 		int bit = readNextBit(bufferedInputStream);
 					
@@ -83,7 +78,7 @@ public class HuffmanUtility {
 		}
 	}
 	
-	private static int readNextBit(BufferedInputStream bufferedInputStream) throws ConverterException {
+	private int readNextBit(BufferedInputStream bufferedInputStream) throws ConverterException {
 		int bit;
 		if (counterBitsInOneByte == 0) {
 			try {
@@ -104,7 +99,7 @@ public class HuffmanUtility {
 		return bit;
 	}
 	
-	public static byte[] decodeHuffman (BufferedInputStream bufferedInputStream, int imageWidth) throws ConverterException {
+	public byte[] decodeHuffman (BufferedInputStream bufferedInputStream, int imageWidth) throws ConverterException {
 			line = new byte[imageWidth*3];
 			Node root = nodeArray.get(0);
 			decodeHuffmanLine(bufferedInputStream, root, imageWidth);
@@ -112,7 +107,7 @@ public class HuffmanUtility {
 		return line;
 	}
 
-	public static void decodeHuffmanLine(BufferedInputStream bufferedInputStream, Node node, int imageWidth) throws ConverterException {
+	public void decodeHuffmanLine(BufferedInputStream bufferedInputStream, Node node, int imageWidth) throws ConverterException {
 		int pixelOfLineDecoded = 0;
 		int bit;
 
@@ -135,7 +130,7 @@ public class HuffmanUtility {
 		}
 		
 	}
-	private static int readNextBitForDecoding(BufferedInputStream bufferedInputStream) throws ConverterException {
+	private int readNextBitForDecoding(BufferedInputStream bufferedInputStream) throws ConverterException {
 		
 		int bit;
 //		übrig gebliebene Bits aus dem letzten Byte nach dem Huffmann-Baum oder der Zeile werden verarbeitet
