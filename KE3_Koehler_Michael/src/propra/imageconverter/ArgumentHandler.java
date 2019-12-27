@@ -1,5 +1,7 @@
 package propra.imageconverter;
 
+import java.io.File;
+
 public class ArgumentHandler {
 	
 	private String inputPath = null;
@@ -28,6 +30,7 @@ public class ArgumentHandler {
 //		Argumente --encode --decode --compression auswerten
 		try {
 			for (String arg : args) { 
+				System.out.println(arg);
 				String[] splitted = arg.split("=");
 				if (splitted[0].startsWith("--input")) {
 					inputPath = splitted[1];
@@ -97,17 +100,23 @@ public class ArgumentHandler {
 			new CopyCompressDecompressTgaFile(inputPath, outputPath, rleCompressionOutputFile);
 		}
 		else if (inputFormat == "propra" && outputFormat == "propra") {
-//			wenn input-Datei rle komprimiert, dann 2 Durchläufe nötig
+//			wenn input-Datei rle komprimiert ist und output soll huffman-kodiert werden, 
+//			dann sind 2 Durchläufe nötig, erst rle-dekomprimieren, 
+//			dann im zweiten Durchlauf huffman-kodieren
 			PropraFormat propraFormat = new PropraFormat(inputPath);
-			if (propraFormat.getTypeOfCompression() == 1) {
-				
-				
+			if (propraFormat.getTypeOfCompression() == 1 && huffmanCompressionOutputFile) {
+				outputPathTemp = outputPath.substring(0, outputPath.length()-7) + "_temp.propra";
+				huffmanCompressionOutputFile = false;
+//				erster Durchlauf
+				new CopyCompressDecompressPropraFile(inputPath, outputPathTemp, rleCompressionOutputFile, huffmanCompressionOutputFile);
+				inputPath = outputPathTemp;
+				huffmanCompressionOutputFile = true;
 			}
 			new CopyCompressDecompressPropraFile(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
 		}
 		else if (inputFormat == "tga" && outputFormat == "propra") {
-//			wenn input-Datei rle komprimiert und output soll huffman-kodiert werden, 
-//			dann 2 Durchläufe nötig, erst rle-dekomprimieren, 
+//			wenn input-Datei rle komprimiert ist und output soll huffman-kodiert werden, 
+//			dann sind 2 Durchläufe nötig, erst rle-dekomprimieren, 
 //			dann im zweiten Durchlauf huffman-kodieren
 			TgaFormat tgaFormat = new TgaFormat(inputPath);
 			if (tgaFormat.getImageType() == 10 && huffmanCompressionOutputFile) {
@@ -115,7 +124,6 @@ public class ArgumentHandler {
 //				erster Durchlauf
 				new CopyCompressDecompressTgaFile(inputPath, outputPathTemp, rleCompressionOutputFile);
 				inputPath = outputPathTemp;
-				
 			}
 			new ConverterTgaToPropra(inputPath, outputPath, rleCompressionOutputFile, huffmanCompressionOutputFile);
 		}
@@ -125,5 +133,6 @@ public class ArgumentHandler {
 		else {
 			throw new ConverterException("Argumente ungültig");
 		}
+		Utility.md5(new File(outputPath));
 	}
 }

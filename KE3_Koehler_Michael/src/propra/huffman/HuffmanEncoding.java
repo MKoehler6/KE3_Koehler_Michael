@@ -53,10 +53,8 @@ public class HuffmanEncoding {
 			createHuffmanTree();
 			writeCodeOfTreeInArray();
 			writeCodeBook();
-			for (Integer integer : codeBook.keySet()) {
-				bufferedInputStream.close();
-				fileInputStream.close();
-			}
+			bufferedInputStream.close();
+			fileInputStream.close();
 		} catch (FileNotFoundException e) {
 			throw new ConverterException("Datei kann nicht gefunden werden");
 		} catch (IOException e) {

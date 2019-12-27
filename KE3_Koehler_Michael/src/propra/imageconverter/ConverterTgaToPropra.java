@@ -90,7 +90,7 @@ public class ConverterTgaToPropra {
 			byte[] outputLineCompressed;
 			
 			if (huffmanCompressionOutputFile) {
-				byte[] encodedHuffmanTree = HuffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
+				HuffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
 			}
 			
 			for (int line = 0; line < imageHeight; line++) {
@@ -120,9 +120,9 @@ public class ConverterTgaToPropra {
 					}
 				} else if (huffmanCompressionOutputFile){ // Output-Datei soll Huffman komprimiert werden
 					inputLine = convertLineToPropra(inputLine); // Pixelreihenfolge ändern, BGR --> GBR
-					outputPixel = HuffmanEncoding.writeEncodedPixelInOutputLine(inputLine);
-					calculateCheckSum(outputPixel);
-					bufferedOutputStream.write(outputPixel);
+					outputLineCompressed = HuffmanEncoding.writeEncodedPixelInOutputLine(inputLine);
+					calculateCheckSum(outputLineCompressed);
+					bufferedOutputStream.write(outputLineCompressed);
 				} else { // Output-Datei bleibt unkomprimiert 
 //					konvertieren, Pruefsumme pixelweise berechnen und in OutputFile schreiben
 					for (int pixel = 0; pixel < imageWidth; pixel++) {

@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import propra.huffman.HuffmanEncoding;
+import propra.huffman.HuffmanUtility;
+
 /**
  * @author Michael Koehler
  * Eine Instanz dieser Klasse kopiert vom
@@ -28,26 +31,33 @@ public class CopyCompressDecompressPropraFile {
 	private long[] anbn = {0,1}; // fuer die Pruefsummenberechnung, speichert An und Bn zwischen;
 	private long calculatedCheckSum;
 	private boolean huffmanCompressionOutputFile;
+	private boolean rleCompressionOutputFile;
+	private boolean uncompressHuffmanInputFile = false;
 	
 	public CopyCompressDecompressPropraFile(String inputPath, String outputPath, boolean rleCompressionOutputFile,
 			boolean huffmanCompressionOutputFile) throws ConverterException {
 		this.huffmanCompressionOutputFile = huffmanCompressionOutputFile;
+		this.rleCompressionOutputFile = rleCompressionOutputFile;
 		inputFile = new File(inputPath);
 		outputFile = new File(outputPath);
 		propraFormat = new PropraFormat(inputPath);
 		imageWidth = propraFormat.getImageWidth();
 		imageHeight = propraFormat.getImageHeight();
-		if (propraFormat.getTypeOfCompression() == 1 && !rleCompressionOutputFile) uncompressAndCopy();
-		if (propraFormat.getTypeOfCompression() == 0 && rleCompressionOutputFile) copyAndCompress();
-		if (propraFormat.getTypeOfCompression() == 0 && !rleCompressionOutputFile) copy();
+		if (propraFormat.getTypeOfCompression() == 2) uncompressHuffmanInputFile = true;
+		if (propraFormat.getTypeOfCompression() == 1 && !rleCompressionOutputFile) uncompressRleAndCopy();
+		if ((propraFormat.getTypeOfCompression() == 0 || propraFormat.getTypeOfCompression() == 2) 
+				&& (rleCompressionOutputFile || huffmanCompressionOutputFile)) copyAndCompressRleOrHuffman();
+		if (propraFormat.getTypeOfCompression() == 0 && !rleCompressionOutputFile && !huffmanCompressionOutputFile) copy();
 		if (propraFormat.getTypeOfCompression() == 1 && rleCompressionOutputFile) copy();
+		if (propraFormat.getTypeOfCompression() == 2 
+				&& !rleCompressionOutputFile && !huffmanCompressionOutputFile) copyAndCompressRleOrHuffman();
 	}
 	
 	/* 
 	 * kopiert den Header und die Pixel und dekomprimiert vorher
 	 * die Input-Datei
 	 */
-	public void uncompressAndCopy() throws ConverterException {
+	public void uncompressRleAndCopy() throws ConverterException {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(inputFile);
 			BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -104,9 +114,9 @@ public class CopyCompressDecompressPropraFile {
 	
 	/* 
 	 * kopiert den Header und die Pixel und komprimiert anschliessend
-	 * die Output-Datei
+	 * die Output-Datei, bei Bedarf wird vorher noch zeilenweise huffman-dekodiert
 	 */
-	public void copyAndCompress() throws ConverterException {
+	public void copyAndCompressRleOrHuffman() throws ConverterException {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(inputFile);
 			BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -121,29 +131,60 @@ public class CopyCompressDecompressPropraFile {
 			byte[] inputLine = new byte[imageWidth*3];
 			byte[] outputLineCompressed;
 			
+//			wenn Input-Datei Huffman-kodiert ist: Huffman-Baum auslesen
+			if (uncompressHuffmanInputFile) {
+				HuffmanUtility.readHuffmanTree(inputFile);
+				bufferedInputStream.skip(HuffmanUtility.counterAllBitsOfTree/8 + 1); // Huffman-Baum und dann 
+				// das nächste Byte
+			}
+			
+			if (huffmanCompressionOutputFile) {
+				HuffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
+			}
+			
 			for (int line = 0; line < imageHeight; line++) {
 //				Einlesen einer Bildlinie
-				for (int pixel = 0; pixel < imageWidth; pixel++) {
-					inputPixel = bufferedInputStream.readNBytes(3);
-					for (int i = 0; i < 3; i++) {
-						inputLine[pixel*3 + i] = inputPixel[i];
+				if (uncompressHuffmanInputFile) {
+					inputLine = HuffmanUtility.decodeHuffman(bufferedInputStream, imageWidth);
+				} else {
+					for (int pixel = 0; pixel < imageWidth; pixel++) {
+						inputPixel = bufferedInputStream.readNBytes(3);
+						for (int i = 0; i < 3; i++) {
+							inputLine[pixel*3 + i] = inputPixel[i];
+						}
 					}
-				}
-//				Line komprimieren
-				outputLineCompressed = Utility.compressOutputLine(inputLine, imageWidth);
-//				Line in OutputFile schreiben
-				for (int i = 0; i < outputLineCompressed.length; i++) {
-					outputByteCompressed[0] = outputLineCompressed[i];
-					calculateCheckSum(outputByteCompressed);
-					bufferedOutputStream.write(outputByteCompressed);
+				} 
+//				Line in Output-Datei ausgeben
+				if (rleCompressionOutputFile) {
+					outputLineCompressed = Utility.compressOutputLine(inputLine, imageWidth);
+	//				Line in OutputFile schreiben
+					for (int i = 0; i < outputLineCompressed.length; i++) {
+						outputByteCompressed[0] = outputLineCompressed[i];
+						calculateCheckSum(outputByteCompressed);
+						bufferedOutputStream.write(outputByteCompressed);
+					} // --input=test_05_rle_copy.propra --output=test_05_huffman5.propra --compression=huffman
+				} else if (huffmanCompressionOutputFile) {
+					outputLineCompressed = HuffmanEncoding.writeEncodedPixelInOutputLine(inputLine);
+					calculateCheckSum(outputLineCompressed);
+					bufferedOutputStream.write(outputLineCompressed);
+				} else { // Output-Datei bleibt unkomprimiert 
+					calculateCheckSum(inputLine);
+					bufferedOutputStream.write(inputLine);
 				}
 			}
 			
 //			Header anpassen
 			bufferedOutputStream.flush();
 			FileChannel fileChannel = fileOutputStream.getChannel();
-			byte[] test = {1};
-			fileChannel.write(ByteBuffer.wrap(test), 15); // schreibe typeOfCompression
+			byte [] typeOfCompression = new byte[1];
+			if (rleCompressionOutputFile) {
+				typeOfCompression[0] = 1;
+			} else if (huffmanCompressionOutputFile) {
+				typeOfCompression[0] = 2;
+			} else {
+				typeOfCompression[0] = 0;
+			}
+			fileChannel.write(ByteBuffer.wrap(typeOfCompression), 15); // schreibe typeOfCompression
 			byte[] sizeOfDataSegment = Utility.longToByteArray(sizeOfDataSegmentOutputFile);
 			fileChannel.write(ByteBuffer.wrap(sizeOfDataSegment), 16); // schreibe SizeOfDataSegment in Header
 			
