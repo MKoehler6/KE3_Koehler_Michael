@@ -25,7 +25,6 @@ public class ConverterTgaToPropra {
 	private boolean rleCompressionOutputFile;
 	private boolean huffmanCompressionOutputFile;
 	private TgaFormat tgaFormat;
-	private String outputPath;
 	
 	private int imageWidth;
     private int imageHeight;
@@ -41,7 +40,6 @@ public class ConverterTgaToPropra {
 		outputFile = new File(outputPath);
 		this.rleCompressionOutputFile = rleCompressionOutputFile;
 		this.huffmanCompressionOutputFile = huffmanCompressionOutputFile;
-		this.outputPath = outputPath;
 		
 		tgaFormat = new TgaFormat(inputPath); // Ueberpruefen der Input-Datei
 		
@@ -164,7 +162,6 @@ public class ConverterTgaToPropra {
 				temp[0] = checkSum[i];
 				fileChannel.write(ByteBuffer.wrap(temp), 24+i); // schreibe die ersten 4 Bytes von checkSum in Header
 			}
-			new PropraFormat(outputPath);
 
 			bufferedInputStream.close();
 			bufferedOutputStream.flush();

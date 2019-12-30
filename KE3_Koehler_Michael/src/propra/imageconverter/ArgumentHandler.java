@@ -16,6 +16,7 @@ public class ArgumentHandler {
 	private String alphabet;
 	private boolean rleCompressionOutputFile = false;
 	private boolean huffmanCompressionOutputFile = false;
+	private boolean autoMode = false;
 	private boolean baseN = false;
 
 	/**
@@ -47,6 +48,9 @@ public class ArgumentHandler {
 				}
 				if (splitted[0].startsWith("--compression") && splitted[1].toLowerCase().contains("huffman")) {
 					huffmanCompressionOutputFile = true;
+				}
+				if (splitted[0].startsWith("--compression") && splitted[1].toLowerCase().contains("auto")) {
+					autoMode = true;
 				}
 				if (splitted[0].startsWith("--encode-base-32")) {
 					encode = true;
@@ -90,7 +94,10 @@ public class ArgumentHandler {
 	
 	public void startAction() throws ConverterException {
 		
-		if (encode) {
+		if (autoMode) {
+			new AutoMode(inputPath, outputPath, inputFormat, outputFormat);
+		}
+		else if (encode) {
 			new EncodeBaseN(inputPath, outputPath, typeOfEncoding, alphabet, baseN);
 		}
 		else if (decode) {
