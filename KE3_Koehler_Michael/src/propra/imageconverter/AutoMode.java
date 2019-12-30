@@ -1,5 +1,6 @@
 package propra.imageconverter;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class AutoMode {
@@ -17,10 +18,7 @@ public class AutoMode {
 		this.inputFormat = inputFormat;
 		
 		action();
-		deleteLargeFiles();
-		renameSmallestFile();
-//		TODO noch entfernen zusammen mit MD5 in Utility
-		System.exit(0);
+		deleteLargerFilesAndRenameSmallestFile();
 	}
 
 	private void action() throws ConverterException {
@@ -35,23 +33,32 @@ public class AutoMode {
 	private String getOutputPathTemp(String outputFormat, String compression) throws ConverterException {
 		String outputPathTemp;
 		if (outputFormat == "tga") {
-			outputPathTemp = "--output=" + outputPath.substring(0, outputPath.length()-4) + "_" + compression + "_temp.tga";
+			outputPathTemp = outputPath.substring(0, outputPath.length()-4) + "_" + compression + "_temp.tga";
 		} else if (outputFormat == "propra") {
-			outputPathTemp = "--output=" + outputPath.substring(0, outputPath.length()-7) + "_" + compression + "_temp.propra";
+			outputPathTemp = outputPath.substring(0, outputPath.length()-7) + "_" + compression + "_temp.propra";
 		} else {
 			throw new ConverterException("Ausgabeformat ungültig");
 		}
-		return outputPathTemp;
+		outputPathArrayListOfAllOutputFiles.add(outputPathTemp);
+		System.out.println(new File(outputPathTemp));
+		System.out.println();
+		return "--output=" + outputPathTemp;
 	}
 
-	private void deleteLargeFiles() {
-		// TODO Auto-generated method stub
-		
+	private void deleteLargerFilesAndRenameSmallestFile() {
+		String outputPathMinimalSize = outputPathArrayListOfAllOutputFiles.get(0);
+		for (int i = 1; i < outputPathArrayListOfAllOutputFiles.size(); i++) {
+			if (new File(outputPathMinimalSize).length() > new File(outputPathArrayListOfAllOutputFiles.get(i)).length()) {
+				outputPathMinimalSize = outputPathArrayListOfAllOutputFiles.get(i);
+			}
+		}
+		System.out.println(outputPathMinimalSize);
+		for (String path : outputPathArrayListOfAllOutputFiles) {
+			System.out.println(new File(path).length());
+			if (!path.equals(outputPathMinimalSize)) {
+				new File(path).delete();
+			}
+		}
+		new File(outputPathMinimalSize).renameTo(new File(outputPath));
 	}
-	
-	private void renameSmallestFile() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

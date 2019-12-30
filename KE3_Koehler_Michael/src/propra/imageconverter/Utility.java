@@ -252,6 +252,7 @@ public class Utility {
 			for (int i = 0; i < md5.length; i++) {
 				System.out.print(String.format("%02X", md5[i]));
 			}
+			System.out.println("  File Length: " + outputFile.length());
 			System.out.println();
 			
 			bufferedInputStream.close();

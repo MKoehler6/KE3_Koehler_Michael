@@ -140,6 +140,6 @@ public class ArgumentHandler {
 		else {
 			throw new ConverterException("Argumente ungültig");
 		}
-		Utility.md5(new File(outputPath));
+//		Utility.md5(new File(outputPath));
 	}
 }

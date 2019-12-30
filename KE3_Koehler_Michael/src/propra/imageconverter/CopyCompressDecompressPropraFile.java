@@ -49,6 +49,7 @@ public class CopyCompressDecompressPropraFile {
 				&& (rleCompressionOutputFile || huffmanCompressionOutputFile)) copyAndCompressRleOrHuffman();
 		if (propraFormat.getTypeOfCompression() == 0 && !rleCompressionOutputFile && !huffmanCompressionOutputFile) copy();
 		if (propraFormat.getTypeOfCompression() == 1 && rleCompressionOutputFile) copy();
+		if (propraFormat.getTypeOfCompression() == 2 && huffmanCompressionOutputFile) copy();
 		if (propraFormat.getTypeOfCompression() == 2 
 				&& !rleCompressionOutputFile && !huffmanCompressionOutputFile) copyAndCompressRleOrHuffman();
 	}
