@@ -1,4 +1,4 @@
-package propra.imageconverter;
+package propra.baseN;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+
+import propra.imageconverter.ConverterException;
 
 /**
  * @author Michael Koehler

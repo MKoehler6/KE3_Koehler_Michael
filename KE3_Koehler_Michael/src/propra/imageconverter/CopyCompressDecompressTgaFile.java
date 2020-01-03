@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import propra.formats.TgaFormat;
+
 /**
  * @author Michael Köhler
  * Eine Instanz dieser Klasse kopiert die Daten vom dataInputArray in das

@@ -1,4 +1,6 @@
-package propra.imageconverter;
+package propra.formats;
+
+import propra.imageconverter.ConverterException;
 
 /**
  * @author Michael Koehler

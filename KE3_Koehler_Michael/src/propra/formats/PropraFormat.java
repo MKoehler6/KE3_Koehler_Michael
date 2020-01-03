@@ -1,4 +1,4 @@
-package propra.imageconverter;
+package propra.formats;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+
+import propra.imageconverter.ConverterException;
+import propra.imageconverter.Utility;
 
 /**
  * @author Michael Koehler
@@ -95,7 +98,7 @@ public class PropraFormat implements IFormat {
 	}
 
 	/**
-	 * liest das komplette Datensegment und berechnet dabei byteweise die Pruefsumme
+	 * liest das Datensegment und berechnet dabei byteweise die Pruefsumme
 	 */
 	private void checkCheckSum() throws ConverterException{
 		try {

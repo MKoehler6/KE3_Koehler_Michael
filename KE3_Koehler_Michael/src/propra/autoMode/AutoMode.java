@@ -1,14 +1,24 @@
-package propra.imageconverter;
+package propra.autoMode;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import propra.imageconverter.ConverterException;
+import propra.imageconverter.ImageConverter;
+
+/**
+ * Eine Instanz dieser Klasse übernimmt den Auto-Modus, konvertiert also mit derjenigen 
+ * Kompression, die die kleinste Datei erzeugt
+ * 
+ * @author Michael Koehler
+ */
 public class AutoMode {
 	
 	String inputPath;
 	String outputPath;
 	String inputFormat;
 	String outputFormat;
+//	ArrayList mit den Pfaden aller temporären Output-Dateien und zwar für uncompresed, rle und huffman (nur propra)
 	ArrayList<String> outputPathArrayListOfAllOutputFiles = new ArrayList<>();
 	
 	public AutoMode (String inputPath, String outputPath, String inputFormat, String outputFormat) throws ConverterException {
@@ -21,6 +31,9 @@ public class AutoMode {
 		deleteLargerFilesAndRenameSmallestFile();
 	}
 
+	/**
+	 * ruft nacheinander das Programm auf mit den unterschiedlichen Kompressionen für die Output-Datei
+	 */
 	private void action() throws ConverterException {
 		String[] args1 = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "uncompressed"), "--compression=uncompressed"};
 		ImageConverter.startWithoutMain(args1);
@@ -32,6 +45,9 @@ public class AutoMode {
 		}
 	}
 	
+	/**
+	 * erstellt den Output-Pfad für die temporären Output-Dateien
+	 */
 	private String getOutputPathTemp(String outputFormat, String compression) throws ConverterException {
 		String outputPathTemp;
 		if (outputFormat == "tga") {
@@ -41,22 +57,25 @@ public class AutoMode {
 		} else {
 			throw new ConverterException("Ausgabeformat ungültig");
 		}
+//		speichern des Output-Pfades in der ArrayList
 		outputPathArrayListOfAllOutputFiles.add(outputPathTemp);
-		System.out.println(new File(outputPathTemp));
-		System.out.println();
 		return "--output=" + outputPathTemp;
 	}
 
+	/**
+	 * löscht die größeren Dateien und behält die kleinste Datei, die dann noch umbenannt wird in den
+	 * ursprünglichen Output-Dateinamen
+	 */
 	private void deleteLargerFilesAndRenameSmallestFile() {
+//		die kleinste Datei wird ermittelt
 		String outputPathMinimalSize = outputPathArrayListOfAllOutputFiles.get(0);
 		for (int i = 1; i < outputPathArrayListOfAllOutputFiles.size(); i++) {
 			if (new File(outputPathMinimalSize).length() > new File(outputPathArrayListOfAllOutputFiles.get(i)).length()) {
 				outputPathMinimalSize = outputPathArrayListOfAllOutputFiles.get(i);
 			}
 		}
-		System.out.println(outputPathMinimalSize);
+//		löschen der größeren Dateien
 		for (String path : outputPathArrayListOfAllOutputFiles) {
-			System.out.println(new File(path).length());
 			if (!path.equals(outputPathMinimalSize)) {
 				new File(path).delete();
 			}

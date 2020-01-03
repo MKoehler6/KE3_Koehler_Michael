@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import propra.formats.TgaFormat;
 import propra.huffman.HuffmanEncoding;
 
 /**

@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 import propra.huffman.HuffmanEncoding;
+import propra.formats.PropraFormat;
 import propra.huffman.HuffmanDecoding;
 
 /**

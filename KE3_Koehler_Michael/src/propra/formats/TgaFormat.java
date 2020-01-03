@@ -1,4 +1,4 @@
-package propra.imageconverter;
+package propra.formats;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+
+import propra.imageconverter.ConverterException;
 
 
 /**
