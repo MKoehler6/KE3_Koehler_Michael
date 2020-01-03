@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import propra.imageconverter.ConverterException;
 
-public class HuffmanUtility {
+public class HuffmanDecoding {
 	
 	int counter = 0;
 	int counterDecode = 0;

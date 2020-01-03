@@ -26,8 +26,10 @@ public class AutoMode {
 		ImageConverter.startWithoutMain(args1);
 		String[] args2 = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "rle"), "--compression=rle"};
 		ImageConverter.startWithoutMain(args2);
-		String[] args3 = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "huffman"), "--compression=huffman"};
-		ImageConverter.startWithoutMain(args3);
+		if (outputFormat == "propra") {
+			String[] args3 = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "huffman"), "--compression=huffman"};
+			ImageConverter.startWithoutMain(args3);
+		}
 	}
 	
 	private String getOutputPathTemp(String outputFormat, String compression) throws ConverterException {

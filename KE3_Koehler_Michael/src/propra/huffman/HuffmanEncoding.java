@@ -48,6 +48,15 @@ public class HuffmanEncoding {
 				nodeArrayForCreateTree.add(node);
 				CopyNodeArrayForCreateTree.add(node);
 			}
+//			einfuegen eines Platzhalters, wenn in den Bilddaten nur ein und dasselbe Byte vorkommt
+			if (set1.size() == 1) {
+				int platzhalter = 0;
+				Node node = new Node(platzhalter);
+				node.setRelativeFrequency(0.0);
+				nodeArrayForCreateTree.add(node);
+				CopyNodeArrayForCreateTree.add(node);
+			}
+			
 			sortNodeArray();
 			createHuffmanTree();
 			writeCodeOfTreeInArray();
@@ -120,6 +129,7 @@ public class HuffmanEncoding {
 	}
 
 	private void createHuffmanTree() {
+
 		while (nodeArrayForCreateTree.size() > 1) {
 			Node node1 = nodeArrayForCreateTree.get(0);
 			Node node2 = nodeArrayForCreateTree.get(1);

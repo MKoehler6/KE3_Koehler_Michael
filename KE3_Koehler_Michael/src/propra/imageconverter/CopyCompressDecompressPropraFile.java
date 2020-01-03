@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 import propra.huffman.HuffmanEncoding;
-import propra.huffman.HuffmanUtility;
+import propra.huffman.HuffmanDecoding;
 
 /**
  * @author Michael Koehler
@@ -133,7 +133,7 @@ public class CopyCompressDecompressPropraFile {
 			byte[] outputLineCompressed;
 			
 //			wenn Input-Datei Huffman-kodiert ist: Huffman-Baum auslesen
-			HuffmanUtility huffmanUtility = new HuffmanUtility();
+			HuffmanDecoding huffmanUtility = new HuffmanDecoding();
 			if (uncompressHuffmanInputFile) {
 				huffmanUtility.readHuffmanTree(inputFile);
 				bufferedInputStream.skip(huffmanUtility.counterAllBitsOfTree/8 + 1); // Huffman-Baum und dann 
@@ -165,7 +165,7 @@ public class CopyCompressDecompressPropraFile {
 						outputByteCompressed[0] = outputLineCompressed[i];
 						calculateCheckSum(outputByteCompressed);
 						bufferedOutputStream.write(outputByteCompressed);
-					} // --input=test_05_rle_copy.propra --output=test_05_huffman5.propra --compression=huffman
+					} 
 				} else if (huffmanCompressionOutputFile) {
 					outputLineCompressed = huffmanEncoding.writeEncodedPixelInOutputLine(inputLine);
 					calculateCheckSum(outputLineCompressed);
@@ -174,6 +174,17 @@ public class CopyCompressDecompressPropraFile {
 					calculateCheckSum(inputLine);
 					bufferedOutputStream.write(inputLine);
 				}
+			}
+			
+//			bei Huffman Kodierung: wenn die restlichen Bits kein vollständiges Byte ergeben, wird
+//			jetzt das letzte Byte mit 0 aufgefüllt (Padding) und geschrieben
+			if (huffmanEncoding.bitArrayForOneByte.size() > 0) {
+				while (huffmanEncoding.bitArrayForOneByte.size() < 8) {
+					huffmanEncoding.bitArrayForOneByte.add(0);
+				}
+				bufferedOutputStream.write(huffmanEncoding.toByteValue(huffmanEncoding.bitArrayForOneByte));
+				byte[] lastByte = {(byte)huffmanEncoding.toByteValue(huffmanEncoding.bitArrayForOneByte)};
+				calculateCheckSum(lastByte);
 			}
 			
 //			Header anpassen

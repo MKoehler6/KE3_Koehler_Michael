@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import propra.huffman.HuffmanUtility;
+import propra.huffman.HuffmanDecoding;
 
 /**
  * @author Michael Köhler
@@ -106,7 +106,7 @@ public class ConverterPropraToTga {
 			byte[] outputLineCompressed;
 			
 //			wenn Input-Datei Huffman-kodiert ist: Huffman-Baum auslesen
-			HuffmanUtility huffmanUtility = new HuffmanUtility();
+			HuffmanDecoding huffmanUtility = new HuffmanDecoding();
 			if (uncompressHuffmanInputFile) {
 				huffmanUtility.readHuffmanTree(inputFile);
 				bufferedInputStream.skip(huffmanUtility.counterAllBitsOfTree/8 + 1); // Huffman-Baum und dann 
