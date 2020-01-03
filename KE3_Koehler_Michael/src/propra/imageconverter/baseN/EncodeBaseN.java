@@ -1,4 +1,4 @@
-package propra.baseN;
+package propra.imageconverter.baseN;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;

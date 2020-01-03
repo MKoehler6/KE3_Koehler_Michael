@@ -1,4 +1,4 @@
-package propra.formats;
+package propra.imageconverter.formats;
 
 import propra.imageconverter.ConverterException;
 

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import propra.formats.TgaFormat;
+import propra.imageconverter.formats.TgaFormat;
 
 /**
  * @author Michael Köhler

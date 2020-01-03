@@ -2,11 +2,11 @@ package propra.imageconverter;
 
 import java.io.File;
 
-import propra.autoMode.AutoMode;
-import propra.baseN.DecodeBaseN;
-import propra.baseN.EncodeBaseN;
-import propra.formats.PropraFormat;
-import propra.formats.TgaFormat;
+import propra.imageconverter.autoMode.AutoMode;
+import propra.imageconverter.baseN.DecodeBaseN;
+import propra.imageconverter.baseN.EncodeBaseN;
+import propra.imageconverter.formats.PropraFormat;
+import propra.imageconverter.formats.TgaFormat;
 
 public class ArgumentHandler {
 	

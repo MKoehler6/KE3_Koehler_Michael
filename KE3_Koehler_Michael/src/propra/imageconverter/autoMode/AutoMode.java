@@ -1,4 +1,4 @@
-package propra.autoMode;
+package propra.imageconverter.autoMode;
 
 import java.io.File;
 import java.util.ArrayList;

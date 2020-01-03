@@ -1,4 +1,4 @@
-package propra.huffman;
+package propra.imageconverter.huffman;
 
 import java.io.BufferedInputStream;
 import java.io.File;

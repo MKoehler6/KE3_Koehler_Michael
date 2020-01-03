@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import propra.huffman.HuffmanEncoding;
-import propra.formats.PropraFormat;
-import propra.huffman.HuffmanDecoding;
+import propra.imageconverter.formats.PropraFormat;
+import propra.imageconverter.huffman.HuffmanDecoding;
+import propra.imageconverter.huffman.HuffmanEncoding;
 
 /**
  * @author Michael Koehler

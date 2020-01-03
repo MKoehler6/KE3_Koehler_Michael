@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import propra.formats.TgaFormat;
-import propra.huffman.HuffmanEncoding;
+import propra.imageconverter.formats.TgaFormat;
+import propra.imageconverter.huffman.HuffmanEncoding;
 
 /**
  * @author Michael Koehler

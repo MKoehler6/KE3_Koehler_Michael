@@ -1,4 +1,4 @@
-package propra.formats;
+package propra.imageconverter.formats;
 
 import java.io.File;
 import java.io.FileInputStream;

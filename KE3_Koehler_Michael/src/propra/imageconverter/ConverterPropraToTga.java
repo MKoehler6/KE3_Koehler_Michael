@@ -8,8 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import propra.formats.PropraFormat;
-import propra.huffman.HuffmanDecoding;
+import propra.imageconverter.formats.PropraFormat;
+import propra.imageconverter.huffman.HuffmanDecoding;
 
 /**
  * @author Michael Köhler

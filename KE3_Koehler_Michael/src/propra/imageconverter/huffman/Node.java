@@ -1,4 +1,4 @@
-package propra.huffman;
+package propra.imageconverter.huffman;
 
 public class Node {
 	
