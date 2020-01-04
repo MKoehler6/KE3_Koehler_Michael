@@ -7,9 +7,10 @@ import java.util.Date;
  * @author Michael Koehler
  * @throws ConverterException: zentrale Fehlerbehandlung in einer eigenen Klasse
  * Diese Klasse enthält die main-Methode, die die Kommandozeilenparameter 
- * an den ArgumentHandler weitergibt
+ * an die Methode startWithoutMain weitergibt. Dies ist notwendig, um aus einer Testsuite heraus
+ * das Programm über startWithoutMain mehrmals hintereinander aufrufen zu können, auch wenn Exceptions geworfen werden
  * mit startAction() der Klasse ArgumentHandler wird die entsprechende Klasse zur
- * Weiterverarbeitung aufgerufen
+ * Weiterverarbeitung der Argumente aufgerufen
  *
  */
 public class ImageConverter {
@@ -20,7 +21,6 @@ public class ImageConverter {
 			startWithoutMain(args);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			e.printStackTrace();
 			System.exit(123);
 		}
 		

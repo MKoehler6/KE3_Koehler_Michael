@@ -91,7 +91,8 @@ public class ArgumentHandler {
 			
 			if (inputFormat == null || inputPath == null) 
 				throw new ConverterException("Input-Parameter ungültig");
-			
+		} catch (ConverterException e) {
+			throw new ConverterException(e.getMessage());	
 		} catch (Exception e) {
 			throw new ConverterException("Argumente ungültig");
 		}
@@ -120,7 +121,7 @@ public class ArgumentHandler {
 			if (propraFormat.getTypeOfCompression() == 1 && huffmanCompressionOutputFile) {
 				outputPathTemp = outputPath.substring(0, outputPath.length()-7) + "_temp.propra";
 				huffmanCompressionOutputFile = false;
-//				erster Durchlauf
+//				erster Durchlauf: rle --> uncompressed
 				new CopyCompressDecompressPropraFile(inputPath, outputPathTemp, rleCompressionOutputFile, huffmanCompressionOutputFile);
 				inputPath = outputPathTemp;
 				huffmanCompressionOutputFile = true;
@@ -134,7 +135,7 @@ public class ArgumentHandler {
 			TgaFormat tgaFormat = new TgaFormat(inputPath);
 			if (tgaFormat.getImageType() == 10 && huffmanCompressionOutputFile) {
 				outputPathTemp = outputPath.substring(0, outputPath.length()-7) + "_temp.tga";
-//				erster Durchlauf
+//				erster Durchlauf: tga rle --> tga uncompressed
 				new CopyCompressDecompressTgaFile(inputPath, outputPathTemp, rleCompressionOutputFile);
 				inputPath = outputPathTemp;
 			}
@@ -146,6 +147,6 @@ public class ArgumentHandler {
 		else {
 			throw new ConverterException("Argumente ungültig");
 		}
-//		Utility.md5(new File(outputPath));
+//		Utility.md5(new File(outputPath)); // Ausgabe des MD5-Hashwertes der Output-Datei
 	}
 }

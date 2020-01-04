@@ -45,6 +45,9 @@ public class CopyCompressDecompressPropraFile {
 		imageWidth = propraFormat.getImageWidth();
 		imageHeight = propraFormat.getImageHeight();
 		if (propraFormat.getTypeOfCompression() == 2) uncompressHuffmanInputFile = true;
+//		hier wird entschieden, was alles komprimiert und dekomprimiert werden muss
+//		und welche Methode zur Anwendung kommt
+//		die Codestruktur könnte hier sicherlich noch optimiert werden
 		if (propraFormat.getTypeOfCompression() == 1 && !rleCompressionOutputFile) uncompressRleAndCopy();
 		if ((propraFormat.getTypeOfCompression() == 0 || propraFormat.getTypeOfCompression() == 2) 
 				&& (rleCompressionOutputFile || huffmanCompressionOutputFile)) copyAndCompressRleOrHuffman();
@@ -89,8 +92,8 @@ public class CopyCompressDecompressPropraFile {
 //			Header anpassen
 			bufferedOutputStream.flush();
 			FileChannel fileChannel = fileOutputStream.getChannel();
-			byte[] test = {0};
-			fileChannel.write(ByteBuffer.wrap(test), 15); // schreibe typeOfCompression
+			byte[] typeOfCompression = {0};
+			fileChannel.write(ByteBuffer.wrap(typeOfCompression), 15); // schreibe typeOfCompression
 			byte[] sizeOfDataSegment = Utility.longToByteArray(sizeOfDataSegmentOutputFile);
 			fileChannel.write(ByteBuffer.wrap(sizeOfDataSegment), 16); // schreibe SizeOfDataSegment in Header
 			
@@ -223,7 +226,7 @@ public class CopyCompressDecompressPropraFile {
 		}
 	}
 	/* 
-	 * kopiert den Header und die Pixel 
+	 * kopiert den Header und die Pixel unverändert
 	 */
 	public void copy() throws ConverterException {
 		try {

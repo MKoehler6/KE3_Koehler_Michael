@@ -14,8 +14,8 @@ import propra.imageconverter.formats.TgaFormat;
 
 /**
  * @author Michael Köhler
- * Eine Instanz dieser Klasse kopiert die Daten vom dataInputArray in das
- * dataOutputArray
+ * Eine Instanz dieser Klasse übernimmt das Kopieren, Dekomprimieren 
+ * und Komprimieren, wenn Input- und Output-Datei tga-Format haben
  *
  */
 public class CopyCompressDecompressTgaFile {
@@ -60,11 +60,8 @@ public class CopyCompressDecompressTgaFile {
 				bufferedOutputStream.write(bufferedInputStream.read());
 			}
 			
-			byte[] inputPixel = new byte[3];
 			byte[] outputPixel = new byte[3];
-			byte[] outputByteCompressed = new byte[1];
 			byte[] inputLine = new byte[imageWidth*3];
-			byte[] outputLineCompressed;
 			
 			for (int line = 0; line < imageHeight; line++) {
 //				Einlesen einer Bildlinie
@@ -82,8 +79,8 @@ public class CopyCompressDecompressTgaFile {
 //			Header anpassen
 			bufferedOutputStream.flush();
 			FileChannel fileChannel = fileOutputStream.getChannel();
-			byte[] test = {2};
-			fileChannel.write(ByteBuffer.wrap(test), 2);
+			byte[] imageType = {2};
+			fileChannel.write(ByteBuffer.wrap(imageType), 2);
 			
 			bufferedInputStream.close();
 			bufferedOutputStream.flush();
@@ -113,7 +110,6 @@ public class CopyCompressDecompressTgaFile {
 			}
 			
 			byte[] inputPixel = new byte[3];
-			byte[] outputPixel = new byte[3];
 			byte[] outputByteCompressed = new byte[1];
 			byte[] inputLine = new byte[imageWidth*3];
 			byte[] outputLineCompressed;
@@ -138,8 +134,8 @@ public class CopyCompressDecompressTgaFile {
 //			Header anpassen
 			bufferedOutputStream.flush();
 			FileChannel fileChannel = fileOutputStream.getChannel();
-			byte[] test = {10};
-			fileChannel.write(ByteBuffer.wrap(test), 2);
+			byte[] imageType = {10};
+			fileChannel.write(ByteBuffer.wrap(imageType), 2);
 			
 			bufferedInputStream.close();
 			bufferedOutputStream.flush();

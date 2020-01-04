@@ -89,7 +89,7 @@ public class DecodeBaseN {
 					faktor = faktor&0x1;
 					zeichenOutput += faktor * (int)Math.pow(2, 7-zaehlerBitsZeichenOutput);
 					zaehlerBitsZeichenOutput ++;
-					if (zaehlerBitsZeichenOutput == 8) {
+					if (zaehlerBitsZeichenOutput == 8) { // das nächste Byte kann geschrieben werden
 						bufferedOutputStream.write(zeichenOutput);
 						zaehlerBitsZeichenOutput = 0;
 						zeichenOutput = 0;
