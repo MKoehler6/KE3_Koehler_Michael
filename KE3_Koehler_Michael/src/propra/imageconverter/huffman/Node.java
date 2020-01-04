@@ -1,19 +1,30 @@
 package propra.imageconverter.huffman;
 
+/**
+ * @author Michael Koehler
+ * Klasse für Knoten des Huffman-Baumes 
+ *
+ */
 public class Node {
 	
-	private Integer value;
-	Node left;
-	Node right;
-	Node parent;
-	private Double relativeFrequency;
-	private int pathToParent;
-	private boolean root = false;
+	private Integer value; // wenn der Knoten ein Blatt ist, wird hier der Byte-Wert gespeichert
+	Node left; // Kindknoten
+	Node right; // Kindknoten
+	Node parent; // Elternknoten
+	private Double relativeFrequency; // relative Häufigkeit des Byte-Wertes in den Imagedaten
+	private int pathToParent; // wenn dieser Knoten links am Elternknoten hängt: 0, ansonsten 1
+	private boolean root = false; // der Wurzelknoten wird mit true gekennzeichnet
 	
+	/**
+	 * Konstruktor für ein Blatt
+	 */
 	public Node(int value) {
 		this.value = value;
 	}
 	
+	/**
+	 * Konstruktor für einen inneren Knoten
+	 */
 	public Node() {
 		value = null;
 	}

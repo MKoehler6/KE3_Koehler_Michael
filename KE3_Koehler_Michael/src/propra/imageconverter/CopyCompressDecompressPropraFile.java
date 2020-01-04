@@ -143,7 +143,7 @@ public class CopyCompressDecompressPropraFile {
 				bufferedInputStream.skip(huffmanUtility.counterAllBitsOfTree/8 + 1); // Huffman-Baum und dann 
 				// das nächste Byte
 			}
-//			wenn Output-Datei Huffman-kodiert werden soll
+//			wenn Output-Datei Huffman-kodiert werden soll: Huffman-Baum und CodeBook erstellen
 			HuffmanEncoding huffmanEncoding = new HuffmanEncoding();
 			if (huffmanCompressionOutputFile) {
 				huffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);

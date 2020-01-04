@@ -7,8 +7,8 @@ import propra.imageconverter.ConverterException;
 import propra.imageconverter.ImageConverter;
 
 /**
- * Eine Instanz dieser Klasse übernimmt den Auto-Modus, konvertiert also mit derjenigen 
- * Kompression, die die kleinste Datei erzeugt
+ * Eine Instanz dieser Klasse übernimmt den Auto-Modus, konvertiert die Input-Datei so,
+ * dass dabei die kleinstmögliche Datei erzeugt wird
  * 
  * @author Michael Koehler
  */
@@ -35,18 +35,18 @@ public class AutoMode {
 	 * ruft nacheinander das Programm auf mit den unterschiedlichen Kompressionen für die Output-Datei
 	 */
 	private void action() throws ConverterException {
-		String[] args1 = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "uncompressed"), "--compression=uncompressed"};
-		ImageConverter.startWithoutMain(args1);
-		String[] args2 = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "rle"), "--compression=rle"};
-		ImageConverter.startWithoutMain(args2);
+		String[] argsUncompressed = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "uncompressed"), "--compression=uncompressed"};
+		ImageConverter.startWithoutMain(argsUncompressed);
+		String[] argsRle = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "rle"), "--compression=rle"};
+		ImageConverter.startWithoutMain(argsRle);
 		if (outputFormat == "propra") {
-			String[] args3 = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "huffman"), "--compression=huffman"};
-			ImageConverter.startWithoutMain(args3);
+			String[] argsHuffman = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "huffman"), "--compression=huffman"};
+			ImageConverter.startWithoutMain(argsHuffman);
 		}
 	}
 	
 	/**
-	 * erstellt den Output-Pfad für die temporären Output-Dateien
+	 * erstellt den jeweiligen Output-Pfad für die temporären Output-Dateien
 	 */
 	private String getOutputPathTemp(String outputFormat, String compression) throws ConverterException {
 		String outputPathTemp;
@@ -80,6 +80,7 @@ public class AutoMode {
 				new File(path).delete();
 			}
 		}
+//		umbenennen
 		new File(outputPathMinimalSize).renameTo(new File(outputPath));
 	}
 }
