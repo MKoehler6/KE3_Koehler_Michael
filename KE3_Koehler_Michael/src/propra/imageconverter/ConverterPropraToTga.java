@@ -110,8 +110,9 @@ public class ConverterPropraToTga {
 			HuffmanDecoding huffmanUtility = new HuffmanDecoding();
 			if (uncompressHuffmanInputFile) {
 				huffmanUtility.readHuffmanTree(inputFile);
-				bufferedInputStream.skip(huffmanUtility.counterAllBitsOfTree/8 + 1); // Huffman-Baum und dann 
-				// das nächste Byte
+				bufferedInputStream.skip(huffmanUtility.counterAllBitsOfTree/8 + 1); // überspringe den Huffman-Baum 
+//				und das nächste Byte, die restlichen Bits in diesem letzten Byte, die schon zu den Bilddaten gehören,
+//				sind gespeichert
 			}
 			
 			for (int line = 0; line < imageHeight; line++) {

@@ -14,13 +14,13 @@ import java.util.ArrayList;
 /**
  * @author Michael Koehler
  * Diese Klasse enthaelt static Methoden, die im gesamten Programm immer wieder gebraucht werden
- * Methoden für Komprimierung, Dekomprimierung, Pruefsummenberechnung, Hashwert-Berechnung zur Kontrolle
+ * Methoden für RLE-Komprimierung, RLE-Dekomprimierung, Pruefsummenberechnung, Hashwert-Berechnung zur Kontrolle
  * und Methoden fuer das Byte-Handling
  */
 public class Utility {
 	
 	/**
-	 * dekomprimiert eine Bildlinie, zu diesem Zweck wird die Bildbreite uebergeben, damit die Methode
+	 * rle-dekomprimiert eine Bildlinie, zu diesem Zweck wird die Bildbreite uebergeben, damit die Methode
 	 * weiss, wie lang eine Bildlinie sein muss
 	 */
 	public static byte[] uncompressInputLine(BufferedInputStream bufferedInputStream, int imageWidth) throws IOException{
@@ -57,7 +57,7 @@ public class Utility {
 	}
 	
 	/**
-	 * komprimiert eine Bildlinie
+	 * rle-komprimiert eine Bildlinie
 	 * die Codestruktur muss stellenweise noch verbessert werden, leider fehlte mir die Zeit dafuer
 	 */
 	public static byte[] compressOutputLine(byte[] line, int imageWidth) {

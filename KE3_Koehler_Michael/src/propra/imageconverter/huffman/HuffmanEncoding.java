@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-//--input=test_05_huffman_copy.propra --output=test_05_copy.tga --compression=uncompressed
 import propra.imageconverter.ConverterException;
 
 /**

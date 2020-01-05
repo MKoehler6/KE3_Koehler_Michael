@@ -37,7 +37,6 @@ public class ArgumentHandler {
 //		Argumente --encode --decode --compression auswerten
 		try {
 			for (String arg : args) { 
-				System.out.println(arg);
 				String[] splitted = arg.split("=");
 				if (splitted[0].startsWith("--input")) {
 					inputPath = splitted[1];

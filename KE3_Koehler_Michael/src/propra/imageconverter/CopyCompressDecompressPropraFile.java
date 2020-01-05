@@ -140,8 +140,8 @@ public class CopyCompressDecompressPropraFile {
 			HuffmanDecoding huffmanUtility = new HuffmanDecoding();
 			if (uncompressHuffmanInputFile) {
 				huffmanUtility.readHuffmanTree(inputFile);
-				bufferedInputStream.skip(huffmanUtility.counterAllBitsOfTree/8 + 1); // Huffman-Baum und dann 
-				// das nächste Byte
+				bufferedInputStream.skip(huffmanUtility.counterAllBitsOfTree/8 + 1); // überspringe Huffman-Baum und dann 
+				// das nächste Byte, wenn in diesem noch Restbits sind, dann sind diese gespeichert
 			}
 //			wenn Output-Datei Huffman-kodiert werden soll: Huffman-Baum und CodeBook erstellen
 			HuffmanEncoding huffmanEncoding = new HuffmanEncoding();

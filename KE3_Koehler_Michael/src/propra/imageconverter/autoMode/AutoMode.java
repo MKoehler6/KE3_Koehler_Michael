@@ -32,7 +32,7 @@ public class AutoMode {
 	}
 
 	/**
-	 * ruft nacheinander das Programm auf mit den unterschiedlichen Kompressionen für die Output-Datei
+	 * ruft mehrmals hintereinander das Programm auf mit den unterschiedlichen Kompressionen für die Output-Datei
 	 */
 	private void action() throws ConverterException {
 		String[] argsUncompressed = {"--input=" + inputPath, getOutputPathTemp(outputFormat, "uncompressed"), "--compression=uncompressed"};

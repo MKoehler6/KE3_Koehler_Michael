@@ -81,7 +81,7 @@ public class ConverterTgaToPropra {
 			for (int i = 0; i < 12; i++) {
 				bufferedOutputStream.write(0);
 			}
-//			ueberspringe 18 Byte und beginne mit dem Lesen ab dem Datensegment
+//			ueberspringe den Header und beginne mit dem Lesen ab dem Datensegment
 			bufferedInputStream.skip(18);
 			
 			byte[] inputPixel = new byte[3];
