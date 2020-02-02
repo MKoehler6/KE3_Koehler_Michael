@@ -93,7 +93,7 @@ public class ConverterTgaToPropra {
 //			wenn Output-Datei Huffman-kodiert werden soll: Huffman-Baum und CodeBook erstellen
 			HuffmanEncoding huffmanEncoding = new HuffmanEncoding();
 			if (huffmanCompressionOutputFile) {
-				huffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight);
+				huffmanEncoding.createHuffmanTreeAndCodeBook(inputFile, imageWidth, imageHeight, "tga");
 			}
 			
 			for (int line = 0; line < imageHeight; line++) {

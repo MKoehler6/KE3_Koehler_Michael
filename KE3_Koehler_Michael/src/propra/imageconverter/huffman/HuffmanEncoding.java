@@ -39,12 +39,15 @@ public class HuffmanEncoding {
 	 * Zum Schluss wird das CodeBook erstellt: jedes Byte-Value wird zusammen mit seinem Bitcode in der 
 	 * HashMap codeBook gespeichert.
 	 */
-	public void createHuffmanTreeAndCodeBook(File inputFile, int imageWidth, int imageHeight) throws ConverterException {
+	public void createHuffmanTreeAndCodeBook(File inputFile, int imageWidth, int imageHeight, String type) throws ConverterException {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(inputFile);
 			BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
 //			überspringen des Headers
-			bufferedInputStream.skip(18);
+			System.err.println(type);
+			if (type.equals("propra")) bufferedInputStream.skip(28);
+			if (type.equals("tga")) bufferedInputStream.skip(18);
+//			bufferedInputStream.skip(18);
 			long imageSizeInBytes = imageWidth * imageHeight * 3;
 //			in der HashMap byteValuesWithCounter werden die Bytes mit der Häufigkeit gespeichert
 			for (long i = 0; i < imageSizeInBytes; i++) {
